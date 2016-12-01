@@ -1,0 +1,23 @@
+==================================================================
+
+음성인식
+
+site : https://www.talater.com/annyang/
+github : https://github.com/evancohen/smart-mirror
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/1.1.0/annyang.min.js"></script>
+
+참고 사이트 : http://vagabond-voyage.blogspot.kr/2016/03/annyang.html
+
+
+==================================================================
+
+
+
+
+
+응용프로그램으로 빌드
+
+https://github.com/electron/electron
+
+

@@ -1,0 +1,79 @@
+/* 
+ * Thema color : 
+ * 1. #ef3b5d
+ * 2. #fade8e rgb(250, 222, 142)
+ * 3. #e9f1e0
+ * 4. #52d9d8
+ * 5. #3eb1be rgb(0, 202, 208)
+ * 
+ */
+
+.waves-effect.waves-thema .waves-ripple { background-color: rgba(250, 222, 142,0.65) }
+.ellipsis { text-overflow: ellipsis; overflow: hidden; white-space: nowrap; word-wrap: normal !important }
+
+header { padding-left: 200px }
+main { padding-left: 200px; padding-bottom: 100px }
+nav { background: rgb(0, 202, 208) }
+
+.side-nav { width: 200px }
+	.side-nav li.logo {
+		margin: 30px 0;
+		text-align: center;
+	}
+	.side-nav a { color: #5c513b }
+	.side-nav a.on { background: #fade8e; }
+	.side-nav a.on .material-icons { color: inherit }
+
+
+.container { margin-top: 2rem }
+	.title {
+	  font-size: 1.98rem; font-weight: bold;
+	  line-height: 110%;
+	  margin: 0 0 .312rem 0;
+	}
+	.sub-title {
+	  font-size: 2.29rem; color: #3eb1be;
+	  line-height: 110%;
+	  margin: 0 0 .168rem 0;
+	}
+	.desc { margin-bottom: 1.516rem; font-size: 1.5rem }
+	table.highlight>tbody>tr { cursor: pointer }
+
+
+
+.player { 
+	position: fixed; z-index: 1000; left: 200px; bottom: 0;
+	width: calc( 100% - 200px); height: 80px;
+	background: #fff;
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,.26),0 2px 10px 0 rgba(0,0,0,.16);
+	}
+	#bar { position: absolute; top:-16px; left: 0 }
+	.thumb { display: none }
+
+.player .art { float: left; width: 80px; height: 80px; user-select: none }
+
+.player .play-info { float: left; width: 335px; height: 80px; padding: 10px }
+	#music-title { font-size: 1.7rem; text-overflow:ellipsis;white-space:nowrap;word-wrap:normal }
+
+.player-btn { margin-right: 10px; float: right; height: 80px; user-select: none }
+	.player-btn .material-icons { vertical-align: top; font-size: 3rem; line-height: 80px; cursor: pointer }
+	.player-btn .material-icons.on { color: #ef3b5d }
+
+	#repeat, #repeat_one { font-size: 2.4rem }
+	#shuffle { font-size: 2.2rem }
+	#pause { display: none }
+	#repeat_one { display: none }
+	.volume-brn { display: inline-block; margin-top:25px; margin-left: 10px }
+	#volume_on, #volume_off { padding: 0 10px; font-size: 2.2rem; line-height: 27px }
+	#volume_off { display: none }
+
+	.volume-box { 
+		display: none; 
+		position: absolute; bottom: 75px; right: -28px; z-index: 2;
+		border: 1px solid;
+		transform: rotateZ(90deg);
+		}
+		.volume-brn:hover .volume-box, .volume-box:hover { display: block 
+	}
+
+
