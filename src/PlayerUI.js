@@ -1,8 +1,8 @@
-// import $ from 'jquery';
-
-class UI {
+class PlayerUI {
 	constructor(o = {}){
+		this.player 		= o.player;
 		this.time_bar		= o.time_bar;
+		this.volume_bar 	= o.volume_bar;
 		this.repeat			= o.repeat;
 		this.repeat_one		= o.repeat_one;
 		this.fast_rewind	= o.fast_rewind;
@@ -12,31 +12,38 @@ class UI {
 		this.shuffle 		= o.shuffle;
 		this.volume_on 		= o.volume_on;
 		this.volume_off 	= o.volume_off;
+
+		// Set jQuery-obj DOM-Player  
+		this._$playerCover = $(this.player).find('#music-cover');
+		this._$playerTitle = $(this.player).find('#music-title');
+		this._$playerInfo  = $(this.player).find('#music-info');
 	}
 
 	init(o = {}){
-		this._timeEvent(o.seek,o.activeColor, o.nonActiveColor);
+		this.setColor(o.activeColor, o.nonActiveColor)
+		this._timeBarEvent(o.seek);
+		this._volumeBarEvent(o.vol);
 		this._repeatEvent();
 		this._playEvent(o.play);
 		this._pauseEvent(o.pause);
 		this._shuffleEvent();
-		this._volumeOnEvent(o.v);
-		this._volumeOffEvent(o.v);
+		this._volumeOnEvent(o.vol_on);
+		this._volumeOffEvent(o.vol_off);
 	}
-
-	_timeEvent(cb,activeColor = '#ef3b5d', nonActiveColor = '#ccc'){
+	setColor(activeColor = '#ef3b5d', nonActiveColor = '#ccc'){
 		this.activeColor 	= activeColor;
 		this.nonActiveColor = nonActiveColor;
-
+	}
+	_timeBarEvent(cb = ()=>{}){
 		const $e = $(this.time_bar);
 
 		$e.change(() => {
 			let min = $e.attr('min');
 			let max = $e.attr('max');
-			let time = $e.val();
-			let calc = (time - min) / (max - min);
+			let val = $e.val();
+			let calc = (val - min) / (max - min);
 
-			cb(time);
+			cb(val);
 
 			$e.css('background-image',
 				'-webkit-gradient(linear, left top, right top,' +
@@ -44,6 +51,35 @@ class UI {
 				'color-stop(' + calc + ','+this.nonActiveColor+'))'
 			);
 		});
+	}
+	_volumeBarEvent(cb = ()=>{}){
+		const $e = $(this.volume_bar);
+
+		$e.change(() => {
+			let min = $e.attr('min');
+			let max = $e.attr('max');
+			let val = $e.val();
+			let calc = (val - min) / (max - min);
+
+			cb(val);
+
+			//return String value from dom
+			if (val === '0') {
+				$(this.volume_on).hide();
+				$(this.volume_off).show();
+			} else {
+				$(this.volume_on).show();
+				$(this.volume_off).hide();
+			}
+			
+
+			$e.css('background-image',
+				'-webkit-gradient(linear, left top, right top,' +
+				'color-stop(' + calc + ','+this.activeColor+'),' +
+				'color-stop(' + calc + ','+this.nonActiveColor+'))'
+			);
+
+		}).trigger('change'); //Update UI
 	}
 	_repeatEvent(cb = ()=>{}){
 		const $repeat 		= $(this.repeat);
@@ -127,6 +163,8 @@ class UI {
 		$volume_off.click(() => {
 			$volume_off.hide();
 			$volume_on.show();
+
+			cb();
 		});
 	}
 	_volumeOffEvent(cb = ()=>{}){
@@ -137,7 +175,7 @@ class UI {
 			$volume_on.hide();
 			$volume_off.show();
 
-			// this.volume = $volume.val();
+			cb();
 		});
 	}
 	setDuration(time){
@@ -166,4 +204,16 @@ class UI {
 		$play.toggle();
 		$pause.toggle();
 	}
+	volumeChange(volume){
+		const $e = $(this.volume_bar);
+
+		$e.val(volume).trigger('change');//Update UI
+	}
+	updatePlayer(o = {cover:'defaultCover.jpg',title:'Loading...',info:'Artist - Album'}){
+		this._$playerCover.attr('src',o.cover);
+		this._$playerTitle.html(o.title);
+		this._$playerInfo.html(o.info);
+	}
 }
+
+export default PlayerUI;

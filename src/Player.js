@@ -34,7 +34,7 @@ class Player {
 
   play()	{ this.$e.embedplayer('play'); }
   pause()	{ this.$e.embedplayer('pause'); }
-  seek(value)  { this.$e.embedplayer('seek',value); }
+  seek(time)  { this.$e.embedplayer('seek',time); }
   vol(volume)  { this.$e.embedplayer('volume',volume); }
   vol_on() { this.$e.embedplayer('volume',this.volume); }
   vol_off() { this.$e.embedplayer('volume',0); }
@@ -49,7 +49,4 @@ class Player {
   
 }
 
-// 	[1, 2, 3].map((x) => {
-  //   const y = x + 1;
-  //   return x * y;
-  // });
+export default Player;

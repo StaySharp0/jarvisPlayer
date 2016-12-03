@@ -25,92 +25,34 @@
   
   <ul class="side-nav fixed">
     <li class="logo">Jarvis LOGO</li>
-    <li class="bold"><a class="waves-effect waves-thema on"><i class="material-icons">trending_flat</i>Continuous</a><span class="cout_"></span></li>
-    <li class="bold"><a class="waves-effect waves-thema"><i class="material-icons">music_note</i>Songs</a></li>
-    <li class="bold"><a class="waves-effect waves-thema"><i class="material-icons">library_music</i>Albums</a></li>
-    <li class="bold"><a class="waves-effect waves-thema"><i class="material-icons">mic_none</i>Artists</a></li>
-    <li class="bold"><a class="waves-effect waves-thema"><i class="material-icons">queue_music</i>Playlists</a></li>
+    <li class="bold">
+      <a class="side-item waves-effect waves-thema" data-event="continuous">
+        <i class="material-icons">trending_flat</i>Continuous
+        </a>
+    </li>
+    <li class="bold">
+      <a class="side-item waves-effect waves-thema"  data-event="songs">
+        <i class="material-icons">music_note</i>Songs
+      </a>
+    </li>
+    <!-- <li class="bold"><a class="waves-effect waves-thema"><i class="material-icons">library_music</i>Albums</a></li>
+    <li class="bold"><a class="waves-effect waves-thema"><i class="material-icons">mic_none</i>Artists</a></li> -->
+    <li class="bold">
+      <a class="side-item waves-effect waves-thema" data-event="playlist">
+        <i class="material-icons">queue_music</i>Playlists
+      </a>
+      <ul id="playList">
+        <li><a class="playList-item" data-event="playlist" data-key="">최근에 추가한 노래</a></li>
+        <li><a class="playList-item" data-event="playlist" data-key="">자주 듣는 노래</a></li>
+      </ul>
+    </li>
   </ul>
 
   <main>
-    <div class="container">
-      <h3 class="title">Continuous</h3>
-      <h4 class="sub-title">Continuous</h4>
-      <div class="desc">6 Songs - 23:04</div>      
-      <audio id="audio" src="test.mp3" controls="controls" preload="auto"></audio>
-      <table class="bordered highlight">
-        <thead>
-          <tr>
-              <th data-field="title">Title</th>
-              <th data-field="Artist">Artist</th>
-              <th data-field="album">Album</th>
-              <th data-field="time">time</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>굳세어라 금순아</td>
-            <td>곽진언,김필</td>
-            <td>국제시장 OST</td>
-            <td>3:53</td>
-          </tr>
-          <tr>
-            <td>丸の內サディスティック (마루노우치 새디스틱)</td>
-            <td>Tokyo Jihen</td>
-            <td>Tokyo Collection</td>
-            <td>4:25</td>
-          </tr>
-          <tr>
-            <td>William Ekh - Adventures (feat. Alexa Lusader) [NCS Release]</td>
-            <td>NCS</td>
-            <td></td>
-            <td>3:28</td>
-          </tr>
-          <tr>
-            <td>굳세어라 금순아</td>
-            <td>곽진언,김필</td>
-            <td>국제시장 OST</td>
-            <td>3:53</td>
-          </tr>
-          <tr>
-            <td>丸の內サディスティック (마루노우치 새디스틱)</td>
-            <td>Tokyo Jihen</td>
-            <td>Tokyo Collection</td>
-            <td>4:25</td>
-          </tr>
-          <tr>
-            <td>William Ekh - Adventures (feat. Alexa Lusader) [NCS Release]</td>
-            <td>NCS</td>
-            <td></td>
-            <td>3:28</td>
-          </tr>
-
-          <tr>
-            <td>굳세어라 금순아</td>
-            <td>곽진언,김필</td>
-            <td>국제시장 OST</td>
-            <td>3:53</td>
-          </tr>
-          <tr>
-            <td>丸の內サディスティック (마루노우치 새디스틱)</td>
-            <td>Tokyo Jihen</td>
-            <td>Tokyo Collection</td>
-            <td>4:25</td>
-          </tr>
-          <tr>
-            <td>William Ekh - Adventures (feat. Alexa Lusader) [NCS Release]</td>
-            <td>NCS</td>
-            <td></td>
-            <td>3:28</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   </main>
 
-  <div class="player minimized">
-    <img class="art" src="/title.jpg">
+  <div id="player">
+    <img id="music-cover" src="/title.jpg">
     <div class="play-info">
       <div id="music-title" class="ellipsis">와리가리와리가리와리가리와리가리와리가리와리가리</div>
       <div id="music-info" class="ellipsis">혁오(hyukoh) - 22</div>
@@ -131,46 +73,12 @@
         </div>
       </div>
     </div>
-    <!--  -->
-
     <input id="bar" type="range" min="0" max="100" value="0" step="0.1">
+    <audio id="audio" src="test.mp3" controls="controls" preload="auto"></audio>
   </div>
 
-<script type="text/javascript" src="/js/jquery.min.js"></script>
-<script type="text/javascript" src="/js/materialize.min.js"></script>
-<script type="text/javascript" src="/js/embedplayer.js"></script>
-<script type="text/javascript" src="/js/html5.js"></script>
-<script type="text/javascript" src="/js/UI.js"></script>
-<script type="text/javascript" src="/js/Player.js"></script>
-
-<script type="text/javascript">
-//main
-const player = new Player('#audio');
-const ui = new UI({
-  time_bar  :'#bar',
-  repeat    :'#repeat',
-  repeat_one:'#repeat_one',
-  play      :'#play',
-  pause     :'#pause',
-  shuffle   :'#shuffle',
-  volume_on :'#volume_on',
-  volume_off:'#volume_off' 
-});
-
-ui.init({
-  play:   ()=>{player.play();},
-  pause:  ()=>{player.pause();},
-  seek:   (time)=>{player.seek(time);}
-});
-
-player.setEnvets('statechange',(state)=>{
-  if(state === 'finished') ui.togglePlay();
-});
-player.setEnvets('durationchange',(duration)=>{ui.setDuration(duration)});
-player.setEnvets('timeupdate',(time)=>{ui.updateTime(time)});
-
-
-</script>
+<script type="text/javascript" src="/vendor"></script>
+<script type="text/javascript" src="/main.js"></script>
 </body>
 
 </html>

@@ -1,7 +1,6 @@
 "use strict";
 
 const express 		= require('express');
-const socket_io		= require('socket.io');
 const path 			= require('path');
 const logger 		= require('morgan');
 const cookieParser 	= require('cookie-parser');
@@ -11,7 +10,6 @@ const compression 	= require('compression');
 const minify 		= require('express-minify');
 
 const app = express();
-app.io = socket_io;
 
 app.use(compression());
 app.use(minify());
@@ -29,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
 
-const routeIndex = require('./app/routes');
+const routeIndex 	= require('./app/routes');
 
 app.use('/', routeIndex);
 
