@@ -39,12 +39,18 @@
     <li class="bold"><a class="waves-effect waves-thema"><i class="material-icons">mic_none</i>Artists</a></li> -->
     <li class="bold">
       <a class="side-item waves-effect waves-thema" data-event="playlist">
-        <i class="material-icons">queue_music</i>Playlists
+        <i class="material-icons">queue_music</i>PlayLists
       </a>
       <ul id="playList">
+        <li><a href="#playlist_add-modal"><i id="btn-playlist_add" class="material-icons">playlist_add</i>Add PlayLists</a></li>
         <li><a class="playList-item" data-event="playlist" data-key="">최근에 추가한 노래</a></li>
         <li><a class="playList-item" data-event="playlist" data-key="">자주 듣는 노래</a></li>
       </ul>
+    </li>
+    <li id="btn-setting" class="bold">
+      <a class="waves-effect waves-thema" href="#setting-modal">
+        <i class="material-icons">settings</i>Setting
+      </a>
     </li>
   </ul>
 
@@ -75,6 +81,31 @@
     </div>
     <input id="bar" type="range" min="0" max="100" value="0" step="0.1">
     <audio id="audio" src="test.mp3" controls="controls" preload="auto"></audio>
+  </div>
+
+  <div id="playlist_add-modal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4>플레이리스트 추가하기</h4>
+       <div class="input-field col s6">
+          <input id="ipt_directory" type="text" class="validate">
+          <label for="ipt_directory">Music directory</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+    </div>
+  </div>
+  <div id="setting-modal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+       <div class="input-field col s6">
+          <input id="ipt_directory" type="text" class="validate">
+          <label for="ipt_directory">Music directory</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+    </div>
   </div>
 
 <script type="text/javascript" src="/vendor"></script>

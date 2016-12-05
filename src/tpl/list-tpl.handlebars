@@ -1,7 +1,17 @@
 <div class="container">
-      <h3 class="title">Continuous</h3>
-      <h4 class="sub-title">Continuous</h4>
-      <div class="desc">6 Songs - 23:04</div>      
+      <h3 class="title ellipsis">Continuous</h3>
+      <h4 class="sub-title ellipsis">Continuous</h4>
+      <div class="desc ellipsis">6 Songs - 23:04</div>
+
+      {{!#if option}}
+      <a class='dropdown-button btn-option' href='#' data-activates='option'>option</a>
+      <ul id='option' class='dropdown-content'>
+        <li><a href="#!"><i class="material-icons">mode_edit</i> Rename</a></li>
+        <li><a href="#!"><i class="material-icons">delete</i>Delete</a></li>
+      </ul>
+
+    
+      {{!/if}}
       
       <table class="bordered highlight">
         <thead>

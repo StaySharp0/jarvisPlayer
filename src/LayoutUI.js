@@ -10,6 +10,9 @@ class LayoutUI {
 		this.main 		= o.main;
 		this.player 	= o.player;
 
+		//init script materialize-css 
+		$('.modal').modal();
+		
 		this.init(o.url);
 	}
 
@@ -81,7 +84,7 @@ class LayoutUI {
 
 		$(this.player).childere('');
 	}
-	updatelist(o = {}){
+	updateList(o = {}){
 		$('main').html(listTpl(o));
 	}
 	
