@@ -9,12 +9,25 @@ class PlayerModel {
 		this._coverPath = './data/cover/'
 		this._db = new Datastore({ filename: './data/database.db', autoload: true });
 		this._count = 0;
-
+		this._playlist_title;
+		
+		
+		if(!fs.existsSync(this._coverPath)){
+			fs.mkdirSync(this._coverPath);
+		}
 		// Music Count
 		this._db.count({ _type:'music' }, (err, count) => {
 			this._count = count;
 			console.log('Music count: '+this._count);
 		});
+		//Initialize titles
+		this._db.find({ _type : 'PlayList'}, (err,docs) => {
+			this._playlist_title = new Array(docs.length);
+			for(let i = 0; i < docs.length ; i++){
+				this._playlist_title[i] = docs[i]._title;
+			}		
+		});
+		
 	}
 	_scan(option =  '',dir = '',filelists = []){
 		let files 		= fs.readdirSync(dir);
@@ -51,43 +64,66 @@ class PlayerModel {
 		music._id 	= ++this._count;
 
 		this._db.insert(music, function (err, newDoc) {
-			console.log(newDoc)
+			console.log(newDoc);
 		});
 	}
-
+	
+/*
 	getMusic(title = ''){
-		// var rtn;
-		// if(title){ 	// get Title music 
-		// 	this._db.find({ 'title': title }, function (err, music) {
-		// 		return music;
-		// 	});
-		// } else { 	// get All Music
-		// 	new Promise(function(resolve,reject){
-		// 		this._db.find({ _type: 'music' }, function (err, musics) {
-		// 			if(err) reject(err);
-		// 			else 	resolve(musics);
-		// 		});
-		// 	}).then(musics)
-			
-		// }
+		 //var rtn;
+		 if(title){ 	// get Title music 
+		 	this._db.find({ 'title': title }, function (err, music) {
+		 		return music;
+		 	});
+		 } else { 	// get All Music
+		 	new Promise(function(resolve,reject){
+		 		this._db.find({ _type: 'music' }, function (err, musics) {
+		 			if(err) reject(err);
+		 			else 	resolve(musics);
+		 		});
+		 	}).then(musics);			
+		 }
+		 
 	}
-
-	// getPlayList(){
-	// 	this.db.find({ 'type': 'PlayList' }, function (err, docs) {
-	// 	});
-	// }
-
+*/
+/*	 getPlayList(title = ''){
+		if(title){
+			
+		}
+	 	this.db.find({ 'type': 'PlayList' }, function (err, docs) {
+		});
+	 }
+*/
 	// getList(title){
 	// 	this.db.find({ 'title': title }, function (err, docs) {
 	// 	});
 	// }
+	 addPlayList(data = {}){		
+		 let me = this;
 
-	
-
-	// addPlayList(data = {}){
-		
-	// }
-
+	 	for(let i = 0; i < this._playlist_title.length; i++){
+		 	if(this._playlist_title[i] == data.getTitle()){
+		 		console.log("title already exists!");
+		 		return;
+		 	}
+	 	}
+		data._type = 'PlayList';			
+		this._db.insert(data,function(err,newDoc){
+			me._playlist_title.push( new PlayList(newDoc).getTitle());
+			//console.log(newDoc);
+		});
+	 }
+	 
+	 deletePlayList(title = ''){
+		 if(!title){
+			 return;
+		 }		 
+		 this._db.remove({_type : 'PlayList', _title : title},{}, function(err,numRemoved){
+			 if(numRemoved){
+				 console.log('Playlist "' + title + '" has been removed.');
+			 }
+		 });
+	 }
 
 	
 }

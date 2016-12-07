@@ -10,12 +10,12 @@ class PlayerCtr {
 	scan(option = '', dir = ''){
 		this._PlayerDAO.updateModel(option,dir);
 	}
+	
+//	getSongs(){
+//		let musics = this._PlayerDAO.getMusic();
 
-	getSongs(){
-		let musics = this._PlayerDAO.getMusic();
-
-		console.log(musics);
-	}
+//		console.log(musics);
+//	}
 
 	// getPlayList(){
 	// 	return this._PlayerDAO.getPlayList();
@@ -28,12 +28,15 @@ class PlayerCtr {
 	// 	return this._PlayerDAO.getList('continuous');
 	// }
 
-	// addPlayList(data = {}) {
-	// 	let playlist = new PlayList(data);
-
-	// 	this._PlayerDAO.addPlayList(playlist);
-	// }
-
+	 addPlayList(data = {}) {
+	 	let playlist = new PlayList(data);
+	 	
+	 	this._PlayerDAO.addPlayList(playlist);
+	 }
+	 deletePlayList(title = ''){
+		 //if(!title) return;
+		 this._PlayerDAO.deletePlayList(title);
+	 }
 
 	// getMusic(title ='',cb = ()=>{}) {
 	// 	let musicObj =this._PlayerDAO.getMusic(title);
