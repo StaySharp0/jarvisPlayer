@@ -23,8 +23,6 @@ const playerUI = new PlayerUI({
 });
 const player = new Player('#audio');
 
-layoutUI.updateList();
-
 
 playerUI.init({
   play:   () => {player.play(); },

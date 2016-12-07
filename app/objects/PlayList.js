@@ -15,7 +15,7 @@ class PlayList {
 	}
 
 	setDesc(txt = ''){
-		if(text.legnth){
+		if(txt === '' && this.musics){
 			let count = this.musics.legnth;
 			let playtime = 0;
 			

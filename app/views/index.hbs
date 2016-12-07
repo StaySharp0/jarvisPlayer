@@ -55,7 +55,9 @@
   </ul>
 
   <main>
+  <audio id="audio" src="" controls="controls" preload="auto"></audio>
   </main>
+
 
   <div id="player">
     <img id="music-cover" src="/title.jpg">
@@ -80,21 +82,27 @@
       </div>
     </div>
     <input id="bar" type="range" min="0" max="100" value="0" step="0.1">
-    <audio id="audio" src="test.mp3" controls="controls" preload="auto"></audio>
+    <!-- <audio id="audio" src="" controls="controls" preload="auto"></audio> -->
   </div>
 
   <div id="playlist_add-modal" class="modal modal-fixed-footer">
     <div class="modal-content">
-      <h4>플레이리스트 추가하기</h4>
+      <h4>Add PlayList</h4>
        <div class="input-field col s6">
-          <input id="ipt_directory" type="text" class="validate">
-          <label for="ipt_directory">Music directory</label>
+          <input id="add-ipt_title" type="text" class="validate">
+          <label for="add-ipt_title">Title</label>
+      </div>
+      <div class="input-field col s6">
+          <input id="add-ipt_subtitle" type="text" class="validate">
+          <label for="add-ipt_subtitle">Sub Title</label>
       </div>
     </div>
     <div class="modal-footer">
-      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+      <a id="add-playlist" class="modal-action modal-close waves-effect waves-ligth btn-flat active">OK</a>
+      <a class="modal-action modal-close waves-effect waves-light btn-flat">Cancle</a>
     </div>
   </div>
+
   <div id="setting-modal" class="modal modal-fixed-footer">
     <div class="modal-content">
       <h4>Modal Header</h4>
@@ -104,10 +112,12 @@
       </div>
     </div>
     <div class="modal-footer">
-      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+      <a id="scan-directory" class="modal-action modal-close waves-effect waves-green btn-flat active">Scan</a>
+      <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancle</a>
     </div>
   </div>
 
+<script type="text/javascript" src="/js/socket.io-stream.js"></script>
 <script type="text/javascript" src="/vendor"></script>
 <script type="text/javascript" src="/main.js"></script>
 </body>

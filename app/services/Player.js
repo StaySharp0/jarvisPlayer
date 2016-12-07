@@ -1,27 +1,45 @@
 //import PlayList Class
 const PlayerModel = require('../models/Player');
+const PlayList 	= require('../objects/PlayList');
 
 class PlayerCtr {
 	constructor(){
 		this._PlayerDAO = new PlayerModel();
 	}
 
-	sacn(option = '', dir = ''){
+	scan(option = '', dir = ''){
 		this._PlayerDAO.updateModel(option,dir);
 	}
 
-	getPlayList(){
-		return this._PlayerDAO.getPlayList();
-	}
-
 	getSongs(){
-		return this._PlayerDAO.getList('songs');
+		let musics = this._PlayerDAO.getMusic();
+
+		console.log(musics);
 	}
 
-	getContinuous() {
+	// getPlayList(){
+	// 	return this._PlayerDAO.getPlayList();
+	// }
+
+	
+
+	// getContinuous() {
 		
-		return this._PlayerDAO.getList('continuous');
-	}
+	// 	return this._PlayerDAO.getList('continuous');
+	// }
+
+	// addPlayList(data = {}) {
+	// 	let playlist = new PlayList(data);
+
+	// 	this._PlayerDAO.addPlayList(playlist);
+	// }
+
+
+	// getMusic(title ='',cb = ()=>{}) {
+	// 	let musicObj =this._PlayerDAO.getMusic(title);
+
+	// 	cb(musicObj.buf);
+	// }
 
 }
 

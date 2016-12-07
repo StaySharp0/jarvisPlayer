@@ -41,6 +41,7 @@ class Player {
   // prev() { this.$e.embedplayer('prev'); }
   // next() { this.$e.embedplayer('next'); }
   
+  setMusic(path){ this.$e.attr('src',path); }
   setEnvets(event,fn){ 
   	if(this.events[event]) {
       this.events[event] = fn;

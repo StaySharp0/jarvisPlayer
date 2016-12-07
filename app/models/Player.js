@@ -4,15 +4,18 @@ const Music 	= require('../objects/Music');
 const fs 		= require('fs');
 const path		= require('path');
 
-
 class PlayerModel {
 	constructor(){
-		console.log('Player Model init');
-		this.db = new Datastore({ filename: '../data.db', autoload: true });
-		
-		this.updateModel();
-	}
+		this._coverPath = './data/cover/'
+		this._db = new Datastore({ filename: './data/database.db', autoload: true });
+		this._count = 0;
 
+		// Music Count
+		this._db.count({ _type:'music' }, (err, count) => {
+			this._count = count;
+			console.log('Music count: '+this._count);
+		});
+	}
 	_scan(option =  '',dir = '',filelists = []){
 		let files 		= fs.readdirSync(dir);
 		let fileList 	= filelists;
@@ -24,7 +27,7 @@ class PlayerModel {
                 fileList = this._scan(option,filePath, fileList);
             }
             else if(path.extname(filePath) === '.mp3') {
-                fileList.push({'name':file, 'path':filePath});
+                fileList.push(filePath);
             }
         });
 
@@ -32,33 +35,61 @@ class PlayerModel {
 	}
 	updateModel(option = '', dir = ''){
 		if(!dir) return;
+		this._db.remove({_type:'music'},{ multi: true }, (err,numRemoved) => {
+			this._count -= numRemoved;
 
-		let musicFiles = this._scan('hard',dir);
-		let musics = musicFiles.map(music => {
-			let song = new Music(music.title,music.path);
-			song.type = 'music';
-
-			return song;
-		});
-
-		this.insertMusic(musics);
-	}
-
-	getPlayList(){
-		this.db.find({ 'type': 'PlayList' }, function (err, docs) {
+			let musicFiles = this._scan('hard',dir);
+			let musics = musicFiles.forEach(MusicPath => {
+				new Music(MusicPath,this._coverPath,(music) => {
+					this._insertMusic(music);
+				});
+			});
 		});
 	}
+	_insertMusic(music = {}){
+		music._type = 'music';
+		music._id 	= ++this._count;
 
-	getList(title){
-		this.db.find({ 'title': title }, function (err, docs) {
+		this._db.insert(music, function (err, newDoc) {
+			console.log(newDoc)
 		});
 	}
 
-	insertMusic(musics = []){
-		this.db.insert(musics, function (err, newDoc) {  
-
-		});
+	getMusic(title = ''){
+		// var rtn;
+		// if(title){ 	// get Title music 
+		// 	this._db.find({ 'title': title }, function (err, music) {
+		// 		return music;
+		// 	});
+		// } else { 	// get All Music
+		// 	new Promise(function(resolve,reject){
+		// 		this._db.find({ _type: 'music' }, function (err, musics) {
+		// 			if(err) reject(err);
+		// 			else 	resolve(musics);
+		// 		});
+		// 	}).then(musics)
+			
+		// }
 	}
+
+	// getPlayList(){
+	// 	this.db.find({ 'type': 'PlayList' }, function (err, docs) {
+	// 	});
+	// }
+
+	// getList(title){
+	// 	this.db.find({ 'title': title }, function (err, docs) {
+	// 	});
+	// }
+
+	
+
+	// addPlayList(data = {}){
+		
+	// }
+
+
+	
 }
 
 module.exports = PlayerModel;
