@@ -4,22 +4,15 @@ const fs 	 = require('fs');
 
 module.exports = (io) => {
 	io.on('connection', function (socket) {
-		// socket.on('get Music', (title) => {
-		// 	player.getMusic(title,(buf)=>{
-		// 		socket.emit('set Music', buf);
-		// 	});
-		// });
+		var tmp = {
+			songs: null
+		}
+		
 
 		// socket.on('continuous', () => {
 		// 	let continuous = player.getContinuous();
 
 		// 	io.emit('updateList',continuous);
-		// });
-
-		// socket.on('songs', () => {
-		// 	let songs = player.getSongs();
-
-		// 	io.emit('updateList',songs);
 		// });
 
 		// socket.on('get PlayList',() => {
@@ -32,8 +25,24 @@ module.exports = (io) => {
 		// 	player.addPlayList(PlayList);
 		// });
 
-		
-		player.getSongs();
+		socket.on('set Music', (idx) => {
+			player.getMusic(idx,buf=>{
+				socket.emit('set Music', buf);
+			});
+		});
+
+		socket.on('songs', () => {
+			if(tmp.songs) {
+				socket.emit('update List',tmp.songs);
+			} else {
+				player.getSongs('',musics => {
+					tmp.songs = musics;
+					socket.emit('update List',tmp.songs);
+				});
+			}
+		});
+
+		// player.scan('hard','/Users/yongjunkim/Documents/genie 받은 폴더');
 		socket.on('scan directory', (dir) => {
 			player.scan('hard',dir);
 		});

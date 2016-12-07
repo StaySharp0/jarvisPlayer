@@ -1,113 +1,68 @@
 <div class="container">
-      <h3 class="title ellipsis">Continuous</h3>
-      <h4 class="sub-title ellipsis">Continuous</h4>
-      <div class="desc ellipsis">6 Songs - 23:04</div>
+  <h3 class="title ellipsis">{{title}}</h3>
+  <h4 class="sub-title ellipsis">{{subTitle}}</h4>
+  <div class="desc ellipsis">{{desc}}</div>
 
-      {{!#if option}}
-      
-      <a class='dropdown-button btn btn-option' href='#' data-activates='option'>option</a>
-      <ul id='option' class='dropdown-content'>
-        <li><a href="#playlist_rename-modal"><i class="material-icons">mode_edit</i> Rename</a></li>
-        <li><a href="#playlist_del-modal"><i class="material-icons">delete</i>Delete</a></li>
-      </ul>
+  {{#if option}}
+    <a class='dropdown-button btn btn-option' href='#' data-activates='option'>option</a>
+    <ul id='option' class='dropdown-content'>
+      <li><a href="#playlist_rename-modal"><i class="material-icons">mode_edit</i> Rename</a></li>
+      <li><a href="#playlist_del-modal"><i class="material-icons">delete</i>Delete</a></li>
+    </ul>
 
-      <div id="playlist_rename-modal" class="modal modal-fixed-footer">
-        <div class="modal-content">
-          <h4 class="ellipsis">What would you like to rename "{{../title}}asdfsafdsafdasfsafad" to?</h4>
-           <div class="input-field col s6">
-              <input value="{{../title}}" id="rename-ipt_title" type="text" class="validate">
-              <label for="rename-ipt_title">Title</label>
-          </div>
-          <div class="input-field col s6">
-              <input value="{{../subtitle}}" id="rename-ipt_subtitle" type="text" class="validate">
-              <label for="rename-ipt_subtitle">Sub Title</label>
-          </div>
+    <div id="playlist_rename-modal" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4 class="ellipsis">What would you like to rename "{{../title}}asdfsafdsafdasfsafad" to?</h4>
+         <div class="input-field col s6">
+            <input value="{{../title}}" id="rename-ipt_title" type="text" class="validate">
+            <label for="rename-ipt_title">Title</label>
         </div>
-        <div class="modal-footer">
-          <a id="rename-playlist" class="modal-action modal-close waves-effect waves-light btn-flat active">OK</a>
-          <a class="modal-action modal-close waves-effect waves-light btn-flat">Cancle</a>
+        <div class="input-field col s6">
+            <input value="{{../subtitle}}" id="rename-ipt_subtitle" type="text" class="validate">
+            <label for="rename-ipt_subtitle">Sub Title</label>
         </div>
       </div>
-
-      <div id="playlist_del-modal" class="modal modal-fixed-footer">
-        <div class="modal-content">
-          <h4 class="ellipsis">Delete Playlist</h4>
-              Do you really want to delete this playlist?
-        </div>
-        <div class="modal-footer">
-          <a id="del-playlist" class="modal-action modal-close waves-effect waves-light btn-flat active">Agree</a>
-          <a class="modal-action modal-close waves-effect waves-light btn-flat ">DisAgree</a>
-        </div>
+      <div class="modal-footer">
+        <a id="rename-playlist" class="modal-action modal-close waves-effect waves-light btn-flat active">OK</a>
+        <a class="modal-action modal-close waves-effect waves-light btn-flat">Cancle</a>
       </div>
-    
-      {{!/if}}
-      
-      <table class="bordered highlight">
-        <thead>
-          <tr>
-              <th data-field="title">Title</th>
-              <th data-field="Artist">Artist</th>
-              <th data-field="album">Album</th>
-              <th data-field="time">time</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr>
-            <td>굳세어라 금순아</td>
-            <td>곽진언,김필</td>
-            <td>국제시장 OST</td>
-            <td>3:53</td>
-          </tr>
-          <tr>
-            <td>丸の內サディスティック (마루노우치 새디스틱)</td>
-            <td>Tokyo Jihen</td>
-            <td>Tokyo Collection</td>
-            <td>4:25</td>
-          </tr>
-          <tr>
-            <td>William Ekh - Adventures (feat. Alexa Lusader) [NCS Release]</td>
-            <td>NCS</td>
-            <td></td>
-            <td>3:28</td>
-          </tr>
-          <tr>
-            <td>굳세어라 금순아</td>
-            <td>곽진언,김필</td>
-            <td>국제시장 OST</td>
-            <td>3:53</td>
-          </tr>
-          <tr>
-            <td>丸の內サディスティック (마루노우치 새디스틱)</td>
-            <td>Tokyo Jihen</td>
-            <td>Tokyo Collection</td>
-            <td>4:25</td>
-          </tr>
-          <tr>
-            <td>William Ekh - Adventures (feat. Alexa Lusader) [NCS Release]</td>
-            <td>NCS</td>
-            <td></td>
-            <td>3:28</td>
-          </tr>
-
-          <tr>
-            <td>굳세어라 금순아</td>
-            <td>곽진언,김필</td>
-            <td>국제시장 OST</td>
-            <td>3:53</td>
-          </tr>
-          <tr>
-            <td>丸の內サディスティック (마루노우치 새디스틱)</td>
-            <td>Tokyo Jihen</td>
-            <td>Tokyo Collection</td>
-            <td>4:25</td>
-          </tr>
-          <tr>
-            <td>William Ekh - Adventures (feat. Alexa Lusader) [NCS Release]</td>
-            <td>NCS</td>
-            <td></td>
-            <td>3:28</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
+
+    <div id="playlist_del-modal" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4 class="ellipsis">Delete Playlist</h4>
+            Do you really want to delete this playlist?
+      </div>
+      <div class="modal-footer">
+        <a id="del-playlist" class="modal-action modal-close waves-effect waves-light btn-flat active">Agree</a>
+        <a class="modal-action modal-close waves-effect waves-light btn-flat ">DisAgree</a>
+      </div>
+    </div>
+  {{/if}}
+  
+  <table class="bordered highlight">
+    <thead>
+      <tr>
+        <th data-field="title">Title</th>
+        <th data-field="Artist">Artist</th>
+        <th data-field="album">Album</th>
+        <th data-field="time">time</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{#musics}}
+      <tr class="music-tr" data-index="{{index}}" data-cover="{{cover}}">
+        <td>{{title}}</td>
+        <td>
+          {{#artist}}
+            {{this}}
+          {{/artist}}
+        </td>
+        <td>{{album}}</td>
+        <td>{{duration}}</td>
+      </tr>
+      {{/musics}}
+    </tbody>
+  </table>
+</div>

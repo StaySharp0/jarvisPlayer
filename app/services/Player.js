@@ -1,6 +1,5 @@
-//import PlayList Class
 const PlayerModel = require('../models/Player');
-const PlayList 	= require('../objects/PlayList');
+const fs 		  = require('fs');
 
 class PlayerCtr {
 	constructor(){
@@ -10,40 +9,62 @@ class PlayerCtr {
 	scan(option = '', dir = ''){
 		this._PlayerDAO.updateModel(option,dir);
 	}
-	
-//	getSongs(){
-//		let musics = this._PlayerDAO.getMusic();
+	_durationSecond(n) {
+		n = n + '';
+		return n.length >= 2 ? n : new Array(2 - n.length + 1).join('0') + n;
+	}
 
-//		console.log(musics);
-//	}
-
-	// getPlayList(){
-	// 	return this._PlayerDAO.getPlayList();
-	// }
-
-	
-
-	// getContinuous() {
+	getSongs(title = '',cb = () =>{}){
+		let musicInfo = this._PlayerDAO.getMusic();
 		
-	// 	return this._PlayerDAO.getList('continuous');
-	// }
+		musicInfo.then(result => {
+			var total_duration = 0;
 
-	 addPlayList(data = {}) {
-	 	let playlist = new PlayList(data);
-	 	
-	 	this._PlayerDAO.addPlayList(playlist);
-	 }
-	 deletePlayList(title = ''){
-		 //if(!title) return;
-		 this._PlayerDAO.deletePlayList(title);
-	 }
+			let musics = result.map(data =>{
+				total_duration += data.duration;
+				let min = parseInt(data.duration / 60);
+				let sec = this._durationSecond(parseInt(data.duration % 60));
+				return {
+					index: 		data._id,
+					title: 		data.title,
+					artist: 	data.artist, //arr
+					album: 		data.album,
+					duration: 	min +':'+ sec,
+					cover: 		data.cover
+				}
+			});
 
-	// getMusic(title ='',cb = ()=>{}) {
-	// 	let musicObj =this._PlayerDAO.getMusic(title);
+			let min = parseInt(total_duration / 60);
+			let sec = this._durationSecond(parseInt(total_duration % 60));
+			let rtn = {
+				title 	: 'Songs',
+				desc 	: musics.length+' Songs - '+min +':'+ sec,
+				musics 	: musics
+			}
 
-	// 	cb(musicObj.buf);
-	// }
+			cb(rtn);
+		});
+	}
 
+	addPlayList(data = {}) {
+		let playlist = new PlayList(data);
+
+		this._PlayerDAO.addPlayList(playlist);
+	}
+	deletePlayList(title = ''){
+
+		this._PlayerDAO.deletePlayList(title);
+	}
+
+	getMusic(idx ='',cb = ()=>{}) {
+		let music = this._PlayerDAO.getMusic(idx);
+
+		music.then(music => {
+			fs.readFile(music[0].path,(error, binaryData)=>{
+				cb(binaryData);
+			});
+		});
+	}
 }
 
 module.exports = PlayerCtr;

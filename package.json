@@ -34,6 +34,7 @@
     "morgan": "~1.7.0",
     "musicmetadata": "^2.0.5",
     "nedb": "^1.8.0",
+    "seq": "^0.3.5",
     "serve-favicon": "~2.3.0",
     "socket.io": "^1.7.1"
   },

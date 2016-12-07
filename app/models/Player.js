@@ -4,6 +4,7 @@ const Music 	= require('../objects/Music');
 const fs 		= require('fs');
 const path		= require('path');
 
+
 class PlayerModel {
 	constructor(){
 		this._coverPath = './data/cover/'
@@ -67,38 +68,18 @@ class PlayerModel {
 			console.log(newDoc);
 		});
 	}
-	
-/*
-	getMusic(title = ''){
-		 //var rtn;
-		 if(title){ 	// get Title music 
-		 	this._db.find({ 'title': title }, function (err, music) {
-		 		return music;
-		 	});
-		 } else { 	// get All Music
-		 	new Promise(function(resolve,reject){
-		 		this._db.find({ _type: 'music' }, function (err, musics) {
-		 			if(err) reject(err);
-		 			else 	resolve(musics);
-		 		});
-		 	}).then(musics);			
-		 }
-		 
-	}
-*/
-/*	 getPlayList(title = ''){
-		if(title){
-			
-		}
-	 	this.db.find({ 'type': 'PlayList' }, function (err, docs) {
+	getMusic(idx){
+		return new Promise((resolve, reject) => {
+			const serchObj = { _type: 'music' };
+			if(idx) serchObj._id = idx;
+
+			this._db.find(serchObj, function (err, music) {
+				if (err) return reject(err);
+        		resolve(music ? music : null);
+			});
 		});
-	 }
-*/
-	// getList(title){
-	// 	this.db.find({ 'title': title }, function (err, docs) {
-	// 	});
-	// }
-	 addPlayList(data = {}){		
+	}
+	addPlayList(data = {}){		
 		 let me = this;
 
 	 	for(let i = 0; i < this._playlist_title.length; i++){
@@ -112,9 +93,9 @@ class PlayerModel {
 			me._playlist_title.push( new PlayList(newDoc).getTitle());
 			//console.log(newDoc);
 		});
-	 }
+	}
 	 
-	 deletePlayList(title = ''){
+	deletePlayList(title = ''){
 		 if(!title){
 			 return;
 		 }		 
@@ -123,9 +104,7 @@ class PlayerModel {
 				 console.log('Playlist "' + title + '" has been removed.');
 			 }
 		 });
-	 }
-
-	
+	}	
 }
 
 module.exports = PlayerModel;

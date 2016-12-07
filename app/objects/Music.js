@@ -6,7 +6,7 @@ class Music {
 	constructor(path = '', coverPath = '', cb = ()=>{}){
 		let me = this;
 		let read_stream = fs.createReadStream(path);
-		let parser = mm(read_stream,{duration : true	},(err, data) => {
+		let parser = mm(read_stream,{duration : true}, (err, data) => {
 			if(err){
 				me.valid = false;
 				throw err;
@@ -23,18 +23,13 @@ class Music {
 			me.gerne = data.gerne;//array
 			me.art_format = data.picture[0].format;//picture is an array
 			me.duration = data.duration;
-			coverPath += me.title +'.'+ me.art_format;			
-			fs.writeFileSync( coverPath, data.picture[0].data);
+			me.coverPath = coverPath+me.title +'.'+ me.art_format;
+			me.cover = me.title +'.'+ me.art_format;
+			fs.writeFileSync( me.coverPath, data.picture[0].data);
 			read_stream.close();
 			cb(me);
 		});		
 	}
-
-	// convert(str) {
-	//     var strContents = new Buffer(str,'utf-8');
-	//     return strContents.toString('utf-8');
-	// }
-
 }
 
 module.exports = Music;

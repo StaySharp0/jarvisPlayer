@@ -62,7 +62,7 @@ nav { background: rgb(0, 202, 208) }
 	table.highlight>tbody>tr { cursor: pointer }
 
 
-#audio {  }
+#audio { display: none; }
 #player { 
 	position: fixed; z-index: 1000; left: 225px; bottom: 0;
 	width: calc( 100% - 225px); height: 80px;
@@ -74,10 +74,10 @@ nav { background: rgb(0, 202, 208) }
 
 	#music-cover { float: left; width: 80px; height: 80px; user-select: none }
 
-	#player .play-info { float: left; width: 335px; height: 80px; padding: 10px }
+	#player .play-info { float: left; width: calc( 100% - 360px); height: 80px; padding: 10px }
 	#music-title { font-size: 1.7rem; text-overflow:ellipsis;white-space:nowrap;word-wrap:normal }
 
-.player-btn { margin-right: 10px; float: right; height: 80px; user-select: none }
+.player-btn { margin-right: 10px; float: right; width: 270px; height: 80px; user-select: none }
 	.player-btn .material-icons { vertical-align: top; font-size: 3rem; line-height: 80px; cursor: pointer }
 	.player-btn .material-icons.on { color: #ef3b5d }
 

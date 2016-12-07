@@ -29,6 +29,8 @@ class PlayerUI {
 		this._shuffleEvent();
 		this._volumeOnEvent(o.vol_on);
 		this._volumeOffEvent(o.vol_off);
+		this._prevEvent(o.prev);
+		this._nextEvent(o.next);
 	}
 	setColor(activeColor = '#ef3b5d', nonActiveColor = '#ccc'){
 		this.activeColor 	= activeColor;
@@ -92,7 +94,7 @@ class PlayerUI {
 				$repeat_one.show();
 
 				status.re 		= false;
-				status.re_one  = true;
+				status.re_one  	= true;
 
 				cb(status);
 			} else {
@@ -109,8 +111,10 @@ class PlayerUI {
 			$repeat_one.hide();
 			$repeat.show();
 
+			$repeat.removeClass('on');
+
 			status.re 		= false;
-			status.re_one  = false;
+			status.re_one  	= false;
 
 			cb(status);
 		});
@@ -122,7 +126,6 @@ class PlayerUI {
 		$play.click(() => {
 			$play.hide();
 			$pause.show();
-			$pause.addClass('on');
 
 			cb();
 		});
@@ -144,13 +147,13 @@ class PlayerUI {
 
 		$shuffle.click(() => {
 			if($shuffle.hasClass('on')){
-				$shuffle.removeClass('on');
 				status = false;
+				$shuffle.removeClass('on');
 
 				cb(status);
 			} else {
-				$shuffle.addClass('on');
 				status = true;
+				$shuffle.addClass('on');
 
 				cb(status);
 			}
@@ -178,6 +181,20 @@ class PlayerUI {
 			cb();
 		});
 	}
+	_prevEvent(cb = ()=>{}){
+		const $e = $(this.fast_rewind);
+
+		$e.click(() => {
+			cb();
+		});
+	}
+	_nextEvent(cb = ()=>{}){
+		const $e = $(this.fast_forward);
+
+		$e.click(() => {
+			cb();
+		});
+	}
 	setDuration(time){
 		const $e = $(this.time_bar);
 		$e.prop('max', time);
@@ -197,12 +214,20 @@ class PlayerUI {
 			'color-stop(' + calc + ','+this.nonActiveColor+'))'
 		);
 	}
-	togglePlay(){
+	togglePlay(option = ''){
 		const $play 	= $(this.play);
 		const $pause 	= $(this.pause);
-		
-		$play.toggle();
-		$pause.toggle();
+
+		if(option){
+			$play.hide();
+			$pause.hide();
+
+			if(option === 'play') $play.show();
+			else if (option === 'pause') $pause.show();
+		}else {
+			$play.toggle();
+			$pause.toggle();
+		}	
 	}
 	volumeChange(volume){
 		const $e = $(this.volume_bar);
@@ -213,6 +238,15 @@ class PlayerUI {
 		this._$playerCover.attr('src',o.cover);
 		this._$playerTitle.html(o.title);
 		this._$playerInfo.html(o.info);
+	}
+
+	set(o){
+		if(o){
+			this.updateTime(0);
+			this._$playerCover.attr('src',o.cover);
+			this._$playerTitle.html(o.title);
+			this._$playerInfo.html(o.artist[0] + ' - ' + o.album);
+		}
 	}
 }
 

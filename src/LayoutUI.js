@@ -9,38 +9,42 @@ class LayoutUI {
 		this.playlist 	= o.playlist;
 		this.main 		= o.main;
 		this.player 	= o.player;
-
-		//init script materialize-css 
-		$('.modal').modal();
+		this.url 		= o.url;
 		
-		this.init(o.url);
+		$('.modal').modal();
 	}
 
-	init(url = ''){
-		if(url === 0) throw new TypeError("can't contact server!");
-		
-		this.url = url;
+	init(playerUI,player){
+		if(this.url === 0) throw new TypeError("can't contact server!");
 		const socket = io.connect(this.url);
-		const stream = ss.createStream();
 		
-		this._SetSocketRoute(socket);
+		player.setSocket(socket);
+		this._SetSocketRoute(socket,playerUI,player);
+
+		this._ListEvent(socket,playerUI,player);
 		this._SideNavEvent(socket);
 		this._PlayListEvent(socket);
 		this._SettingEvent(socket);
 
 		socket.emit('get PlayList');
-		socket.emit('scan directory');
 
-		socket.on('set Music',(buffer)=>{
-			let data = new Uint8Array(buffer);
-			let blob = new Blob([data], { 'type' : 'audio/mp3' });
-			let url  = URL.createObjectURL(blob);
+	}
+	_ListEvent(socket,playerUI,player) {
+		$(document).on('click','.music-tr',(e) => {
+			if(player.getListKey !== this._updateList.title){
+				player.setList(this._updateList);			
+			}
 
-			$('#audio').attr('src',url);
+			let idx = $(e.currentTarget).data('index');
+			
+			if(player.getIndex().musicIndex === idx) return false;
+
+			player.setIndex(idx);
+			playerUI.set(player.getMusicInfo(idx));
+
+			socket.emit('set Music', idx);
 		});
 	}
-
-
 	_SettingEvent(socket){
 		$(document).on('click','#scan-directory',() => {
 			let data = $('#ipt_directory').val();
@@ -79,13 +83,13 @@ class LayoutUI {
 
 		//Get PlayList's music list
 		$(document).on('click',$playListItems,function(e) {
-			if($(e.target).hasClass('on')) return;
+			if($(e.currentTarget).hasClass('on')) return;
 
 			$playListItems.removeClass('on');
-			$(e.target).addClass('on');
+			$(e.currentTarget).addClass('on');
 
-			let event 	= $(e.target).data('event');
-			let key 	= $(e.target).data('key'); 
+			let event 	= $(e.currentTarget).data('event');
+			let key 	= $(e.currentTarget).data('key'); 
 
 			socket.emit(event,key);
 		});
@@ -123,17 +127,21 @@ class LayoutUI {
 			console.log('del');
 		});
 	}
-	_SetSocketRoute(socket){
+	_SetSocketRoute(socket,playerUI,player){
+		socket.on('set Music',buffer=>{
+			player.setMusic(buffer);
+		});
+
 		socket.on('update PlayList', (data) => {
 			console.log(data);
 		});
 
-		socket.on('update MusicList', (data) => {
-			console.log(data);
+		socket.on('update List', data => {
+			this._updateList = data;
+			this.updateList(data);
 		});
 	}
 	updatePlayList(o = {}){
-
 		$(this.player).childere('');
 	}
 	updateList(o = {}){
@@ -141,9 +149,6 @@ class LayoutUI {
 
 		$('main .modal').modal();
 	}
-	
-
-	
 }
 
 export default LayoutUI;

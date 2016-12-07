@@ -55,22 +55,21 @@
   </ul>
 
   <main>
-  <audio id="audio" src="" controls="controls" preload="auto"></audio>
   </main>
 
 
   <div id="player">
-    <img id="music-cover" src="/title.jpg">
+    <img id="music-cover" src="">
     <div class="play-info">
-      <div id="music-title" class="ellipsis">와리가리와리가리와리가리와리가리와리가리와리가리</div>
-      <div id="music-info" class="ellipsis">혁오(hyukoh) - 22</div>
+      <div id="music-title" class="ellipsis"></div>
+      <div id="music-info" class="ellipsis"></div>
     </div>
     <div class="player-btn">
       <i id="repeat" class="material-icons">repeat</i>
       <i id="repeat_one" class="material-icons on">repeat_one</i>
       <i id="fast_rewind" class="material-icons">fast_rewind</i>
       <i id="play" class="material-icons">play_arrow</i>
-      <i id="pause" class="material-icons">pause</i>
+      <i id="pause" class="material-icons on">pause</i>
       <i id="fast_forward" class="material-icons">fast_forward</i>
       <i id="shuffle" class="material-icons btn-order">shuffle</i>
       <div class="volume-brn">
@@ -82,7 +81,7 @@
       </div>
     </div>
     <input id="bar" type="range" min="0" max="100" value="0" step="0.1">
-    <!-- <audio id="audio" src="" controls="controls" preload="auto"></audio> -->
+    <audio id="audio" src="" controls="controls" autoplay="autoplay" preload="auto"></audio>
   </div>
 
   <div id="playlist_add-modal" class="modal modal-fixed-footer">
