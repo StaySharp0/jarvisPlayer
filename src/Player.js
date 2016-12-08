@@ -115,11 +115,10 @@ class Player {
     };
   }
   setList(data){
-    this._listKey = data.title;
     this._list = data.musics;
   }
   getListKey(){
-    return this._listKey;
+    return this._list.key;
   }
   getMusicInfo(idx){
     if(idx) {

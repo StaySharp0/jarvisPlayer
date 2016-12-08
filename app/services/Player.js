@@ -37,6 +37,7 @@ class PlayerCtr {
 			let min = parseInt(total_duration / 60);
 			let sec = this._durationSecond(parseInt(total_duration % 60));
 			let rtn = {
+				key		: 'Songs',
 				title 	: 'Songs',
 				desc 	: musics.length+' Songs - '+min +':'+ sec,
 				musics 	: musics

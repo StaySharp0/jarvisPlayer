@@ -31,7 +31,7 @@ class LayoutUI {
 	}
 	_ListEvent(socket,playerUI,player) {
 		$(document).on('click','.music-tr',(e) => {
-			if(player.getListKey !== this._updateList.title){
+			if(player.getListKey !== this._updateList.key){
 				player.setList(this._updateList);
 			}
 
