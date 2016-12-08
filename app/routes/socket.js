@@ -26,8 +26,9 @@ module.exports = (io) => {
 		// });
 
 		socket.on('set Music', (idx) => {
-			player.getMusic(idx,buf=>{
-				socket.emit('set Music', buf);
+			console.log(idx)
+			player.getMusic(idx, buf =>{
+				socket.emit('set Music', {'idx':idx,'buf':buf});
 			});
 		});
 

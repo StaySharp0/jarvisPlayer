@@ -39,10 +39,8 @@ class LayoutUI {
 			
 			if(player.getIndex().musicIndex === idx) return false;
 
-			player.setIndex(idx);
+			player.play(idx);
 			playerUI.set(player.getMusicInfo(idx));
-
-			socket.emit('set Music', idx);
 		});
 	}
 	_SettingEvent(socket){
@@ -127,8 +125,8 @@ class LayoutUI {
 		});
 	}
 	_SetSocketRoute(socket,playerUI,player){
-		socket.on('set Music',buffer=>{
-			player.setMusic(buffer);
+		socket.on('set Music',(data) =>{
+			player.setMusic(data.idx,data.buf);
 		});
 
 		socket.on('update PlayList', (data) => {

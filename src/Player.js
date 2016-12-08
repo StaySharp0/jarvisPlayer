@@ -4,7 +4,7 @@ class Player {
 
     this._$e     = $(element);
     this._volume = 1;
-    this._index  = null;
+    this._index  = null;  // List Index
     this._list   = null;
     this._playOp = {
       repeat:     false,
@@ -41,7 +41,19 @@ class Player {
   	}).embedplayer('listen'); // enable all events
   }
 
-  play()	{ this._$e.embedplayer('play'); }
+  play(idx)	{ 
+    if(idx){
+      let music = this.getMusicInfo(idx);
+
+      if(music.src){
+        this._$e.attr('src',music.src);
+      } else {
+        this._socket.emit('set Music', music.index);  
+      }
+    } else {
+      this._$e.embedplayer('play');   
+    }
+  }
   pause()	{ this._$e.embedplayer('pause'); }
   seek(time)  { this._$e.embedplayer('seek',time); }
   vol(volume)  { this._$e.embedplayer('volume',volume); }
@@ -54,8 +66,9 @@ class Player {
 
       if( this._index === 1 ) return this.seek(0);
       music = this.getMusicInfo(--this._index);
-      this._socket.emit('set Music', music.index);
     }
+
+    this.play(music.index);
 
     return music;
   }
@@ -72,7 +85,7 @@ class Player {
         music = this.getMusicInfo(++this._index);
       }
 
-      this._socket.emit('set Music', music.index);
+      this.play(music.index);
 
       return music;
     }
@@ -97,12 +110,17 @@ class Player {
     }
   }
 
-  setMusic(buffer){
+  setMusic(idx,buffer){
     let data = new Uint8Array(buffer);
     let blob = new Blob([data], { 'type' : 'audio/mp3' });
     let url  = URL.createObjectURL(blob);
 
-    $('#audio').attr('src',url);
+    this._list.forEach((music,listIndex) => {
+      if(music.index === idx) {
+        this._list[listIndex].src = url
+        this._$e.attr('src',url);
+      }
+    }); 
   }
 
 
@@ -123,7 +141,13 @@ class Player {
   }
   getMusicInfo(idx){
     if(idx) {
-      return this._list[idx-1];
+      let musicInfo;
+
+      this._list.forEach(music => {
+        if(music.index === idx) musicInfo = music;
+      });
+
+      return musicInfo;
     }
     else {
       if(this._index) return this._list[this._index-1];
