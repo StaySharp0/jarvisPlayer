@@ -22,15 +22,8 @@ class Player {
     };
 
     this._$e.on('embedplayer:statechange', (e) => {
-      if(e.state === 'finished') {
-        this._playOp.map((key,value)=> {
-          if(key === 'repeat' && value) this.next();
-          else if(key === 'repeat_one' && value) this.seek(0);
-          else if(key === 'shuffle' && value) this._shufflePlay();
-        });
-      }
-    	this._events.statechange(e.state);
 
+    	this._events.statechange(e.state,this._playOp);
   	}).on('embedplayer:error', (e) => {
   		this._events.error(e.error);
 
@@ -62,6 +55,8 @@ class Player {
       let music = this.getMusicInfo(--this._index);
       this._socket.emit('set Music', music.index);
     }
+
+    return music;
   }
   next() {
     if(this._list){
@@ -77,13 +72,16 @@ class Player {
       }
 
       this._socket.emit('set Music', music.index);
+
+      return music;
     }
   }
-  _shufflePlay() {
+  shufflePlay() {
     this._index = parseInt((Math.random() * this._list.length) + 1);
     let music = this.getMusicInfo(this._index);
 
     this._socket.emit('set Music', music.index);
+    return music;
   }
  
   setEnvets(event,fn){ 

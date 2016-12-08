@@ -72,7 +72,6 @@ class LayoutUI {
 			else {
 				$playListItems.removeClass('on');
 				$playlist.hide();
-				
 			}
 		});
 

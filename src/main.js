@@ -43,9 +43,24 @@ playerUI.init({
 
 window.player = player;
 
-player.setEnvets('statechange',(state)=>{
+player.setEnvets('statechange',(state,op)=>{
   if(state === 'playing') playerUI.togglePlay('pause');
-  if(state === 'finished') playerUI.togglePlay('play');
+  if(state === 'finished') {
+    if(op.repeat) {
+      let musicInfo = player.next();
+      playerUI.set(musicInfo);
+    }
+    else if (op.repeat_one) {
+      player.seek(0);
+      player.play();
+    }
+    else if(op.shuffle) {
+      let musicInfo = player.shufflePlay();
+      playerUI.set(musicInfo);
+    } else {
+      playerUI.togglePlay('play');  
+    }
+  }
 });
 player.setEnvets('durationchange',(duration)=>{playerUI.setDuration(duration)});
 player.setEnvets('timeupdate',(time)=>{playerUI.updateTime(time)});
