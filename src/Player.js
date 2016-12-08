@@ -48,11 +48,12 @@ class Player {
   vol_on() { this._$e.embedplayer('volume',this._volume); }
   vol_off() { this._$e.embedplayer('volume',0); }
   prev() { 
+    let music;
     if(this._list){
       if(this._playOp.shuffle) return this._shufflePlay();
 
       if( this._index === 1 ) return this.seek(0);
-      let music = this.getMusicInfo(--this._index);
+      music = this.getMusicInfo(--this._index);
       this._socket.emit('set Music', music.index);
     }
 
