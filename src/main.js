@@ -33,8 +33,15 @@ playerUI.init({
   vol_on: () => { player.vol_on(); },
   vol_off:() => { player.vol_off(); },
   prev:   () => { player.prev(); playerUI.set(player.getMusicInfo()); },
-  next:   () => { player.next(); playerUI.set(player.getMusicInfo()); }
+  next:   () => { player.next(); playerUI.set(player.getMusicInfo()); },
+  playOpion:(option) => { 
+    $.map(option,(value,key) => {
+      player.setPlayOption(key,value);
+    });
+  }
 });
+
+window.player = player;
 
 player.setEnvets('statechange',(state)=>{
   if(state === 'playing') playerUI.togglePlay('pause');

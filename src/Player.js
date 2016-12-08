@@ -4,6 +4,13 @@ class Player {
 
     this._$e     = $(element);
     this._volume = 1;
+    this._index  = null;
+    this._list   = null;
+    this._playOp = {
+      repeat:     false,
+      repeat_one: false,
+      shuffle:    false
+    };
     this._events = {
       statechange:    (state)   =>{ console.log('state:', state); },
       error:          (err)     =>{ console.log('err: ',err); },
@@ -15,6 +22,13 @@ class Player {
     };
 
     this._$e.on('embedplayer:statechange', (e) => {
+      if(e.state === 'finished') {
+        this._playOp.map((key,value)=> {
+          if(key === 'repeat' && value) this.next();
+          else if(key === 'repeat_one' && value) this.seek(0);
+          else if(key === 'shuffle' && value) this._shufflePlay();
+        });
+      }
     	this._events.statechange(e.state);
 
   	}).on('embedplayer:error', (e) => {
@@ -42,6 +56,8 @@ class Player {
   vol_off() { this._$e.embedplayer('volume',0); }
   prev() { 
     if(this._list){
+      if(this._playOp.shuffle) return this._shufflePlay();
+
       if( this._index === 1 ) return this.seek(0);
       let music = this.getMusicInfo(--this._index);
       this._socket.emit('set Music', music.index);
@@ -49,24 +65,47 @@ class Player {
   }
   next() {
     if(this._list){
-      if( this._index === this._list.length ) return this.seek(0);
-      let music = this.getMusicInfo(++this._index);
+      let music;
+
+      if(this._playOp.shuffle) return this._shufflePlay();
+
+      if( this._index === this._list.length ) {
+        this._index = 1;
+        music = this.getMusicInfo(this._index);
+      } else {
+        music = this.getMusicInfo(++this._index);
+      }
+
       this._socket.emit('set Music', music.index);
     }
   }
-  
-  setMusic(buffer){     
+  _shufflePlay() {
+    this._index = parseInt((Math.random() * this._list.length) + 1);
+    let music = this.getMusicInfo(this._index);
+
+    this._socket.emit('set Music', music.index);
+  }
+ 
+  setEnvets(event,fn){ 
+    if(this._events[event]) {
+      this._events[event] = fn;
+    }
+  }
+
+  setPlayOption(option,value){
+    if(typeof this._playOp[option] !== undefined) {
+      this._playOp[option] = value;
+    }
+  }
+
+  setMusic(buffer){
     let data = new Uint8Array(buffer);
     let blob = new Blob([data], { 'type' : 'audio/mp3' });
     let url  = URL.createObjectURL(blob);
 
     $('#audio').attr('src',url);
   }
-  setEnvets(event,fn){ 
-  	if(this._events[event]) {
-      this._events[event] = fn;
-    }
-  }
+
 
   setIndex(idx){
     this._index = idx;

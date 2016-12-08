@@ -17,16 +17,18 @@ class PlayerUI {
 		this._$playerCover = $(this.player).find('#music-cover');
 		this._$playerTitle = $(this.player).find('#music-title');
 		this._$playerInfo  = $(this.player).find('#music-info');
+
+		this._status = { repeat:false, repeat_one:false, shuffle:false };
 	}
 
 	init(o = {}){
 		this.setColor(o.activeColor, o.nonActiveColor)
 		this._timeBarEvent(o.seek);
 		this._volumeBarEvent(o.vol);
-		this._repeatEvent();
+		this._repeatEvent(o.playOpion);
 		this._playEvent(o.play);
 		this._pauseEvent(o.pause);
-		this._shuffleEvent();
+		this._shuffleEvent(o.playOpion);
 		this._volumeOnEvent(o.vol_on);
 		this._volumeOffEvent(o.vol_off);
 		this._prevEvent(o.prev);
@@ -86,24 +88,23 @@ class PlayerUI {
 	_repeatEvent(cb = ()=>{}){
 		const $repeat 		= $(this.repeat);
 		const $repeat_one 	= $(this.repeat_one);
-		const status = { re:false, re_one:false };
-
+		
 		$repeat.click(() => {
 			if($repeat.hasClass('on')){
 				$repeat.hide().removeClass('on');
 				$repeat_one.show();
 
-				status.re 		= false;
-				status.re_one  	= true;
+				this._status.repeat 	= false;
+				this._status.repeat_one = true;
 
-				cb(status);
+				cb(this._status);
 			} else {
 				$repeat.addClass('on');
 
-				status.re 		= true;
-				status.re_one	= false;
+				this._status.repeat 	= true;
+				this._status.repeat_one = false;
 
-				cb(status);
+				cb(this._status);
 			}
 		});
 
@@ -113,10 +114,10 @@ class PlayerUI {
 
 			$repeat.removeClass('on');
 
-			status.re 		= false;
-			status.re_one  	= false;
+			this._status.repeat 	= false;
+			this._status.repeat_one = false;
 
-			cb(status);
+			cb(this._status);
 		});
 	}
 	_playEvent(cb = ()=>{}){
@@ -143,19 +144,18 @@ class PlayerUI {
 	}
 	_shuffleEvent(cb = ()=>{}){
 		const $shuffle 	= $(this.shuffle);
-		let 	status 	= false;
 
 		$shuffle.click(() => {
 			if($shuffle.hasClass('on')){
-				status = false;
+				this._status.shuffle = false;
 				$shuffle.removeClass('on');
 
-				cb(status);
+				cb(this._status);
 			} else {
-				status = true;
+				this._status.shuffle = true;
 				$shuffle.addClass('on');
 
-				cb(status);
+				cb(this._status);
 			}
 		});
 	}
