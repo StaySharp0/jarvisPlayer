@@ -20,6 +20,7 @@ const player = new Player('#audio');
 
 const layoutUI = new LayoutUI({
   url     : window.href,
+  form    : '#frm-search',
   side    :'.side-nav',
   playlist:'#playList',
   main    :'main'

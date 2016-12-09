@@ -15,47 +15,59 @@ class PlayerCtr {
 		return n.length >= 2 ? n : new Array(2 - n.length + 1).join('0') + n;
 	}
 
+	_makeReturn(key,title,data = {}){
+		var total_duration = 0;
+
+		let musics = data.map(data =>{
+			total_duration += data.duration;
+			let min = parseInt(data.duration / 60);
+			let sec = this._durationSecond(parseInt(data.duration % 60));
+			return {
+				index: 		data._id,
+				title: 		data.title,
+				artist: 	data.artist, //arr
+				album: 		data.album,
+				duration: 	min +':'+ sec,
+				cover: 		data.cover
+			}
+		});
+
+		let min = parseInt(total_duration / 60);
+		let sec = this._durationSecond(parseInt(total_duration % 60));
+		let rtn = [{
+			key	: key,
+			title 	: title,
+			desc 	: musics.length+' Songs - '+min +':'+ sec,
+			musics 	: musics
+		}];
+
+		return rtn;
+	}
+
 	getSongs(title = '',cb = () =>{}){
 		let musicInfo = this._PlayerDAO.getMusic();
 		
 		musicInfo.then(result => {
-			var total_duration = 0;
-
-			let musics = result.map(data =>{
-				total_duration += data.duration;
-				let min = parseInt(data.duration / 60);
-				let sec = this._durationSecond(parseInt(data.duration % 60));
-				return {
-					index: 		data._id,
-					title: 		data.title,
-					artist: 	data.artist, //arr
-					album: 		data.album,
-					duration: 	min +':'+ sec,
-					cover: 		data.cover
-				}
-			});
-
-			let min = parseInt(total_duration / 60);
-			let sec = this._durationSecond(parseInt(total_duration % 60));
-			let rtn = {
-				key		: 'Songs',
-				title 	: 'Songs',
-				desc 	: musics.length+' Songs - '+min +':'+ sec,
-				musics 	: musics
-			}
-
-			cb(rtn);
+			cb(this._makeReturn('Songs','Songs',result));
 		});
 	}
 
-	addPlayList(data = {}, cb = () => {}) {
-		let playlist = new PlayList(data);
-
-		this._PlayerDAO.addPlayList(playlist).then(cb);
+	addPlayList(data = {}) {
+		return co.wrap(function *(service){
+			service._PlayerDAO.addPlayList(data);
+		})(this);
 	}
-	deletePlayList(title = ''){
+	delPlayList(id = ''){
+		return co.wrap(function *(service){
 
-		this._PlayerDAO.deletePlayList(title);
+			service._PlayerDAO.deletePlayList(id);
+		})(this);
+	}
+	editPlayList(data = {}){
+		return co.wrap(function *(){
+
+			service._PlayerDAO.modifyPlayList(data.key, data);
+		})(this);
 	}
 
 	getMusic(idx ='',cb = ()=>{}) {
@@ -69,15 +81,35 @@ class PlayerCtr {
 	}
 
 
-	// getPlayList(key=''){
-	// 	let modal = this._PlayerDAO;
+	getPlayList(idx=''){
+		return co.wrap(function *(service){
+			let playList = yield service._PlayerDAO.getPlayList(idx);
 
-	// 	return co.wrap(function *(){
-	// 		let playList = yield modal.getPlayList();
+			let rtn = playList.map(data => {
+				return {
+					key 	: data._id,
+					title 	: data._title,
+					subTitle: data._subTitle,
+					desc 	: data._desc,
+					musics 	: data._musics,
+					option	: true
+				}
+			});
 
-	// 		return playList;	
-	// 	})();
-	// }
+			return rtn;	
+		})(this);
+	}
+
+	searchMusic(keyword=''){
+		return co.wrap(function *(service){
+			let musics = yield service._PlayerDAO.searchMusic(keyword);
+			let title = 'Search By "'+keyword+'"';
+
+			let rtn = service._makeReturn('search',title,musics);
+
+			return rtn;
+		})(this);
+	}
 }
 
 module.exports = PlayerCtr;

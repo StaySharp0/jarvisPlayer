@@ -1,10 +1,11 @@
-import listTpl from './tpl/list-tpl.handlebars'
-import playListTpl from './tpl/list-tpl.handlebars'
+import listTpl from './tpl/list-tpl.handlebars';
+import playListTpl from './tpl/playlist-tpl.handlebars';
 import * as io from 'socket.io-client';
 
 
 class LayoutUI {
-	constructor( o  = { url:'' ,side:'', playlist:'', main:'', player:''} ){	
+	constructor( o  = { url:'' ,side:'', playlist:'', main:'', player:''} ){
+		this.form 		= o.form;
 		this.side 		= o.side;
 		this.playlist 	= o.playlist;
 		this.main 		= o.main;
@@ -21,6 +22,7 @@ class LayoutUI {
 		player.setSocket(socket);
 		this._SetSocketRoute(socket,playerUI,player);
 
+		this._SearchEvnet(socket)
 		this._ListEvent(socket,playerUI,player);
 		this._SideNavEvent(socket);
 		this._PlayListEvent(socket);
@@ -28,6 +30,14 @@ class LayoutUI {
 
 		socket.emit('get PlayList');
 
+	}
+	_SearchEvnet(socket){
+		$(this.form).submit(e => {
+			let keyword = $(this.form).find('input').val();
+
+			socket.emit('search Music', keyword);
+			return false;
+		})
 	}
 	_ListEvent(socket,playerUI,player) {
 		$(document).on('click','.music-tr',(e) => {
@@ -53,8 +63,6 @@ class LayoutUI {
 	_SideNavEvent(socket){
 		const $sideNavItems = $(this.side).find('.side-item');
 		const $playlist 	= $(this.playlist);
-		const $playListItems= $(this.playlist).find('.playList-item');
-		
 
 		$sideNavItems.click(function() {
 			if($(this).hasClass('on')) return;
@@ -68,28 +76,27 @@ class LayoutUI {
 
 			if(event === 'playlist') $playlist.show();
 			else {
-				$playListItems.removeClass('on');
 				$playlist.hide();
+				$('.playlist-item').removeClass('on');
 			}
 		});
 
 		$sideNavItems.eq(0).trigger('click');
 	}
 	_PlayListEvent(socket){
-		const $playListItems = $(this.playlist).find('.playList-item');
 
 		//Get PlayList's music list
-		$(document).on('click',$playListItems,function(e) {
+		$(document).on('click','.playlist-item',function(e) {
 			if($(e.currentTarget).hasClass('on')) return;
 
-			$playListItems.removeClass('on');
+			$('.playlist-item').removeClass('on');
 			$(e.currentTarget).addClass('on');
 
-			let event 	= $(e.currentTarget).data('event');
 			let key 	= $(e.currentTarget).data('key'); 
 
-			socket.emit(event,key);
+			socket.emit('get PlayList',key);
 		});
+
 
 
 		//Add PlayList
@@ -105,46 +112,73 @@ class LayoutUI {
 			$('#add-ipt_subtitle').val('').removeClass('on valid');
 		});
 
+		//Rename PlayList
 		$(document).on('click','#rename-playlist',() => {
 			let obj = {
+				key: 	  $('.container').data('key'),
 				title: 	  $('#rename-ipt_title').val(),
 				subTitle: $('#rename-ipt_subtitle').val()
 			};
 			
-			console.log(obj);
-			// socket.emit('rename PlayList', obj);
+			socket.emit('edit PlayList', obj);
 
 			$('#rename-ipt_title').val('').removeClass('on valid');
 			$('#rename-ipt_subtitle').val('').removeClass('on valid');
 		});
 
+		//Del PlayList
 		$(document).on('click','#del-playlist',() => {
+			let key = $('.container').data('key');
+			
+			socket.emit('del PlayList',key);
 
-			// socket.emit('del PlayList', obj);
-			console.log('del');
+			$(this.main).html('');
 		});
+
+		// //Add PlayList Miusi
+		// $(document).on('click','#add-playlist',() => {
+		// 	let obj = {
+		// 		title: 	  $('#add-ipt_title').val(),
+		// 		subTitle: $('#add-ipt_subtitle').val()
+		// 	};
+			
+		// 	socket.emit('add PlayList', obj);
+
+		// 	$('#add-ipt_title').val('').removeClass('on valid');
+		// 	$('#add-ipt_subtitle').val('').removeClass('on valid');
+		// });
 	}
 	_SetSocketRoute(socket,playerUI,player){
 		socket.on('set Music',(data) =>{
 			player.setMusic(data.idx,data.buf);
 		});
 
-		socket.on('update PlayList', (data) => {
-			console.log(data);
+		socket.on('update PlayList', data => {
+			this.updatePlayList(data);
 		});
 
 		socket.on('update List', data => {
-			this._updateList = data;
-			this.updateList(data);
+			this._updateList = data[0];
+			this.updateList(data[0]);
+
+			if(data[0].key === 'search'){
+				$('.side-item').removeClass('on');
+			}
 		});
 	}
 	updatePlayList(o = {}){
-		$(this.player).childere('');
+		$(this.playlist).html(playListTpl(o));
+
+		let key = $('.container').data('key')
+		$('.playlist-item').map((idx,e)=>{
+			if( $(e).data('key') === key ) $(e).addClass('on');
+		});
 	}
 	updateList(o = {}){
-		$('main').html(listTpl(o));
+		$(this.main).html(listTpl(o));
 
 		$('main .modal').modal();
+		$('main .dropdown-button').dropdown();
 	}
 }
 

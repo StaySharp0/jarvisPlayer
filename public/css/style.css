@@ -16,9 +16,9 @@ main { padding-left: 225px; padding-bottom: 100px }
 nav { background: rgb(0, 202, 208) }
 
 #playlist_add-modal,
-#playlist_rename-modal { height: 43% }
+#playlist_rename-modal { height: 285px }
 .modal h4 { margin-bottom: 2rem; font-size: 1.7rem }
-.modal.modal-fixed-footer { height: 30% }
+.modal.modal-fixed-footer { height: 210px }
 .modal .btn-flat.active { font-weight: bold; color: #ef3b5d }
 
 .side-nav { width: 225px }
@@ -31,8 +31,8 @@ nav { background: rgb(0, 202, 208) }
 	.side-nav .side-item.on .material-icons { color: inherit }
 
 	#playList { display: none }
-	#playList .playList-item { padding-left: 4rem; height: 30px; line-height: 30px; color: #999; cursor: pointer }
-	#playList .playList-item.on { font-weight: bold; color: #666 }
+	#playList .playlist-item { padding-left: 4rem; height: 30px; line-height: 30px; color: #999; cursor: pointer }
+	#playList .playlist-item.on { font-weight: bold; color: #666 }
 	
 
 
