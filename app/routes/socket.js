@@ -44,6 +44,7 @@ module.exports = (io) => {
 					socket.emit('update PlayList', playlists);
 				});
 				player.getPlayList(data.key).then(playlists =>{
+					console.log(playlists)
 					socket.emit('update List', playlists);
 				});
 			});
@@ -76,7 +77,10 @@ module.exports = (io) => {
 		socket.on('scan directory', (dir) => {
 			player.scan('hard',dir);
 			
-			//scan 후 get Sons 하기
+			player.getSongs('',musics => {
+				tmp.songs = musics;
+				socket.emit('update List',tmp.songs);
+			});
 		});
 	});
 };

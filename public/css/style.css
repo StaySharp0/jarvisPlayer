@@ -17,9 +17,14 @@ nav { background: rgb(0, 202, 208) }
 
 #playlist_add-modal,
 #playlist_rename-modal { height: 285px }
+
 .modal h4 { margin-bottom: 2rem; font-size: 1.7rem }
 .modal.modal-fixed-footer { height: 210px }
 .modal .btn-flat.active { font-weight: bold; color: #ef3b5d }
+
+#playlist_addMusic-modal { height: 600px }
+	#frm-Music2playlist { height: 440px; overflow: scroll }
+	#frm-Music2playlist label { color: #666 }
 
 .side-nav { width: 225px }
 	.side-nav li.logo {
@@ -35,15 +40,15 @@ nav { background: rgb(0, 202, 208) }
 	#playList .playlist-item.on { font-weight: bold; color: #666 }
 	
 
-
-
 .container { position: relative;margin-top: 2rem }
 	.title {
+	  width: calc( 100% - 140px);
 	  font-size: 1.98rem; font-weight: bold;
 	  line-height: 110%;
 	  margin: 0 0 .312rem 0;
 	}
 	.sub-title {
+	  width: calc( 100% - 140px);
 	  font-size: 2.29rem; color: #3eb1be;
 	  line-height: 110%;
 	  margin: 0 0 .168rem 0;
@@ -52,7 +57,7 @@ nav { background: rgb(0, 202, 208) }
 
 	.btn-option{ 
 		position: absolute; top: 0; right: 0;
-		width: 125px; background: #3eb1be;
+		width: 135px; background: #3eb1be;
      	}
      	#option li a { color: #000 }
      	#option .material-icons {

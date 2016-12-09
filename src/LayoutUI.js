@@ -1,5 +1,6 @@
 import listTpl from './tpl/list-tpl.handlebars';
 import playListTpl from './tpl/playlist-tpl.handlebars';
+import addMusicIemTpl from './tpl/addMusic-tpl.handlebars';
 import * as io from 'socket.io-client';
 
 
@@ -47,8 +48,9 @@ class LayoutUI {
 
 			let idx = $(e.currentTarget).data('index');
 			
-			if(player.getIndex().musicIndex === idx) return false;
+			if(player.getMusicId() === idx) return false;
 
+			player.setIndex(idx);
 			player.play(idx);
 			playerUI.set(player.getMusicInfo(idx));
 		});
@@ -135,18 +137,17 @@ class LayoutUI {
 			$(this.main).html('');
 		});
 
-		// //Add PlayList Miusi
-		// $(document).on('click','#add-playlist',() => {
-		// 	let obj = {
-		// 		title: 	  $('#add-ipt_title').val(),
-		// 		subTitle: $('#add-ipt_subtitle').val()
-		// 	};
-			
-		// 	socket.emit('add PlayList', obj);
+		//Add PlayList Miusi
+		$(document).on('click','#add-music',() => {
+			let key = $('.container').data('key');
+			let musics = [];
 
-		// 	$('#add-ipt_title').val('').removeClass('on valid');
-		// 	$('#add-ipt_subtitle').val('').removeClass('on valid');
-		// });
+			$('#frm-Music2playlist [type=checkbox]:checked').map((idx,e) => {
+				musics.push($(e).data('index'));
+			});
+			
+			socket.emit('edit PlayList', {key:key, musics : musics});
+		});
 	}
 	_SetSocketRoute(socket,playerUI,player){
 		socket.on('set Music',(data) =>{
@@ -162,7 +163,11 @@ class LayoutUI {
 			this.updateList(data[0]);
 
 			if(data[0].key === 'search'){
+				$(this.playlist).hide();
 				$('.side-item').removeClass('on');
+				$('.playlist-item').removeClass('on');
+			} else if (data[0].key === 'Songs'){
+				$('#frm-Music2playlist').html(addMusicIemTpl(data[0]));
 			}
 		});
 	}

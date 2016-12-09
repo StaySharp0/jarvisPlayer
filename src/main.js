@@ -42,7 +42,6 @@ playerUI.init({
   }
 });
 
-
 player.setEnvets('statechange',(state,op)=>{
   if(state === 'playing') playerUI.togglePlay('pause');
   if(state === 'finished') {

@@ -15,31 +15,36 @@ class PlayerCtr {
 		return n.length >= 2 ? n : new Array(2 - n.length + 1).join('0') + n;
 	}
 
-	_makeReturn(key,title,data = {}){
+	_makeReturn(key,title,data = []){
 		var total_duration = 0;
 
-		let musics = data.map(data =>{
-			total_duration += data.duration;
-			let min = parseInt(data.duration / 60);
-			let sec = this._durationSecond(parseInt(data.duration % 60));
-			return {
-				index: 		data._id,
-				title: 		data.title,
-				artist: 	data.artist, //arr
-				album: 		data.album,
-				duration: 	min +':'+ sec,
-				cover: 		data.cover
-			}
-		});
-
-		let min = parseInt(total_duration / 60);
-		let sec = this._durationSecond(parseInt(total_duration % 60));
 		let rtn = [{
-			key	: key,
+			key		: key,
 			title 	: title,
-			desc 	: musics.length+' Songs - '+min +':'+ sec,
-			musics 	: musics
-		}];
+			desc 	: ''
+		}]
+
+		if(data.length !== 0){
+			let musics = data.map(data =>{
+				total_duration += data.duration;
+				let min = parseInt(data.duration / 60);
+				let sec = this._durationSecond(parseInt(data.duration % 60));
+				return {
+					index: 		data._id,
+					title: 		data.title,
+					artist: 	data.artist, //arr
+					album: 		data.album,
+					duration: 	min +':'+ sec,
+					cover: 		data.cover
+				}
+			});
+
+			let min = parseInt(total_duration / 60);
+			let sec = this._durationSecond(parseInt(total_duration % 60));
+
+			rtn[0].desc = musics.length+' Songs - '+min +':'+ sec;
+			rtn[0].musics = musics;
+		}
 
 		return rtn;
 	}
@@ -64,7 +69,10 @@ class PlayerCtr {
 		})(this);
 	}
 	editPlayList(data = {}){
-		return co.wrap(function *(){
+		return co.wrap(function *(service){
+			if(data.musics){
+				data.musics = yield service._PlayerDAO.getMusic(data.musics);
+			}
 
 			service._PlayerDAO.modifyPlayList(data.key, data);
 		})(this);
@@ -86,17 +94,17 @@ class PlayerCtr {
 			let playList = yield service._PlayerDAO.getPlayList(idx);
 
 			let rtn = playList.map(data => {
-				return {
-					key 	: data._id,
-					title 	: data._title,
-					subTitle: data._subTitle,
-					desc 	: data._desc,
-					musics 	: data._musics,
-					option	: true
-				}
+				let rtn = service._makeReturn(data._id,data._title,data._musics);				
+				
+				rtn[0].subTitle = data._subTitle;
+				rtn[0].desc 	 = data._desc;
+				rtn[0].option   = true;
+				
+				return rtn[0];
 			});
 
-			return rtn;	
+			console.log(rtn[0].musics);
+			return rtn;
 		})(this);
 	}
 

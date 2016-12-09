@@ -41,17 +41,14 @@ class Player {
   	}).embedplayer('listen'); // enable all events
   }
 
-  play(idx)	{ 
-    if(idx){
-      let music = this.getMusicInfo(idx);
+  play(music_id)	{ 
+    if(music_id){
+      let music = this.getMusicInfo(music_id);
 
-      if(music.src){
-        this._$e.attr('src',music.src);
-      } else {
-        this._socket.emit('set Music', music.index);  
-      }
+      if(music.src) this._$e.attr('src',music.src);
+      else this._socket.emit('set Music', music.index);  
     } else {
-      this._$e.embedplayer('play');   
+      this._$e.embedplayer('play');
     }
   }
   pause()	{ this._$e.embedplayer('pause'); }
@@ -64,13 +61,10 @@ class Player {
     if(this._list){
       if(this._playOp.shuffle) return this._shufflePlay();
 
-      if( this._index === 1 ) return this.seek(0);
-      music = this.getMusicInfo(--this._index);
+      if( this._index === 0 ) return this.seek(0);
+      music = this._list[--this._index];
     }
-
     this.play(music.index);
-
-    return music;
   }
   next() {
     if(this._list){
@@ -78,24 +72,25 @@ class Player {
 
       if(this._playOp.shuffle) return this._shufflePlay();
 
-      if( this._index === this._list.length ) {
-        this._index = 1;
-        music = this.getMusicInfo(this._index);
+      if( this._index === this._list.length-1) {
+        this._index = 0;
+        music = this._list[this._index];
       } else {
-        music = this.getMusicInfo(++this._index);
+        music = this._list[++this._index];
       }
 
       this.play(music.index);
-
-      return music;
     }
   }
-  shufflePlay() {
+  _shufflePlay() {
     this._index = parseInt((Math.random() * this._list.length) + 1);
-    let music = this.getMusicInfo(this._index);
+    let music = this._list[this._index];
 
-    this._socket.emit('set Music', music.index);
-    return music;
+    if(music.src){
+      this._$e.attr('src',music.src);
+    } else {
+      this._socket.emit('set Music', music.index);  
+    }
   }
  
   setEnvets(event,fn){ 
@@ -124,14 +119,17 @@ class Player {
   }
 
 
-  setIndex(idx){
-    this._index = idx;
+  setIndex(music_id){
+    this._list.forEach((music,listIndex) => {
+      if(music.index === music_id) this._index = listIndex;
+    });
   }
-  getIndex(){
-    return {
-      musicIndex: this._index,
-      infoIndex: this._index - 1
-    };
+  getMusicId(){
+    if(this._list[this._index]) {
+      return this._list[this._index].index;
+    } else {
+      return undefined;
+    }
   }
   setList(data){
     this._list = data.musics;
@@ -139,18 +137,17 @@ class Player {
   getListKey(){
     return this._list.key;
   }
-  getMusicInfo(idx){
-    if(idx) {
+  getMusicInfo(music_id){
+    if(music_id) {
       let musicInfo;
 
       this._list.forEach(music => {
-        if(music.index === idx) musicInfo = music;
+        if(music.index === music_id) musicInfo = music;
       });
-
       return musicInfo;
     }
     else {
-      if(this._index) return this._list[this._index-1];
+      if(this._index !== undefined) return this._list[this._index];
     }   
   }
   setSocket(socket) { 
