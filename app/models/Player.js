@@ -136,11 +136,12 @@ class PlayerModel {
 		 	}
 		 	this._playlist_title.push(playlist.getTitle());
 			playlist._type = 'PlayList';
-			playlist._id = 'pl_' + ++this._playlist_cnt;			
+			playlist._id = 'pl_' + (this._playlist_cnt+1);
 			this._db.insert(playlist,(err,newDoc) => {
 				if(err){
 					reject(err);
 				}
+				this._playlist_cnt++;
 				resolve();
 				//this._playlist_title.push( new PlayList(newDoc).getTitle());
 				//console.log(newDoc);
@@ -153,13 +154,12 @@ class PlayerModel {
 			 if(!id){
 				 reject();
 			 }
-			 this._playlist_cnt--;		 
 			 this._db.remove({_type : 'PlayList', _id : id},{}, (err,numRemoved) => {
 			 	if(err){
 			 		reject(err);
 			 	}
 				 if(numRemoved){
-				 	console.log('Playlist "' + title + '" has been removed.');
+				 	this._playlist_cnt--;
 				 	resolve();					
 				 }
 			 });
