@@ -99,55 +99,68 @@ class PlayerModel {
 	}
 
 	modifyPlayList(id = '',o = {title : '',subtitle : ''}){
-		if(!id){
-			return;
-		}
-		const searchObj = {_type : 'PlayList', _id : id};
-		const updateObj = {$set : {}};
-		if(o.title){
-			updateObj.$set._title = o.title;
-		}
-		if(o.subtitle){
-			updateObj.$set._subtitle = o.subtitle;
-		}
-		if(o.musics != undefined && o.musics.constructor == Array){
-			updateObj.$set._musics = o.musics;
-		}
-		this._db.update(searchObj, updateObj, {}, (err,numReplaced)=>{
-			if(err){
-				throw err;
-			} 
-			//dosomething	
-		});
+			if(!id){
+				return;
+			}
+			const searchObj = {_type : 'PlayList', _id : id};
+			const updateObj = {$set : {}};
+			if(o.title){
+				updateObj.$set._title = o.title;
+			}
+			if(o.subtitle){
+				updateObj.$set._subtitle = o.subtitle;
+			}	
+			if(o.musics != undefined && o.musics.constructor == Array){
+				updateObj.$set._musics = o.musics;
+			}
+			this._db.update(searchObj, updateObj, {}, (err,numReplaced)=>{
+				if(err){
+					throw err;
+				} 
+				//dosomething	
+			});
 
 	}
 
 	addPlayList(data = {}){
-	 	for(let i = 0; i < this._playlist_title.length; i++){
-		 	if(this._playlist_title[i] == data.getTitle()){
-		 		console.log("title already exists!");
-		 		return ;
+		return new Promise((resolve, reject) => {
+		 	for(let i = 0; i < this._playlist_title.length; i++){
+			 	if(this._playlist_title[i] == data.getTitle()){
+			 		console.log("title already exists!");
+			 		return reject();
+			 	}
 		 	}
-	 	}
-	 	this._playlist_title.push(data.getTitle());
-		data._type = 'PlayList';
-		data._id = 'pl_' + ++this._playlist_cnt;			
-		this._db.insert(data,(err,newDoc) => {
-			//this._playlist_title.push( new PlayList(newDoc).getTitle());
-			//console.log(newDoc);
+		 	this._playlist_title.push(data.getTitle());
+			data._type = 'PlayList';
+			data._id = 'pl_' + ++this._playlist_cnt;			
+			this._db.insert(data,(err,newDoc) => {
+				if(err){
+					reject(err);
+				}
+				resolve();
+				//this._playlist_title.push( new PlayList(newDoc).getTitle());
+				//console.log(newDoc);
+			});
 		});
 	}
 	 
-	deletePlayList(title = ''){
-		 if(!title){
-			 return;
-		 }		 
-		 this._db.remove({_type : 'PlayList', _title : title},{}, (err,numRemoved) => {
-			 if(numRemoved){
-				 console.log('Playlist "' + title + '" has been removed.');
+	deletePlayList(id = ''){
+		return new Promise((resolve, reject) => {
+			 if(!id){
+				 reject();
 			 }
-		 });
-	}	
+			 this._playlist_cnt--;		 
+			 this._db.remove({_type : 'PlayList', _id : id},{}, (err,numRemoved) => {
+			 	if(err){
+			 		reject(err);
+			 	}
+				 if(numRemoved){
+				 	console.log('Playlist "' + title + '" has been removed.');
+				 	resolve();					
+				 }
+			 });
+		});	
+	}
 }
 
 module.exports = PlayerModel;
