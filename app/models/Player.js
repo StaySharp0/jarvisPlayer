@@ -25,6 +25,7 @@ class PlayerModel {
 		//Initialize titles
 		this._db.find({ _type : 'PlayList'}, (err,docs) => {
 			//this._playlist_title = new Array(docs.length);
+			this._playlist_cnt = docs.length;
 			for(let i = 0; i < docs.length ; i++){
 				this._playlist_title[i] = docs[i]._title;
 			}		
