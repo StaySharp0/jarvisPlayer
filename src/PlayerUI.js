@@ -297,7 +297,8 @@ class PlayerUI {
 			cb(this._status);
 		}
 	}
-	SetShuffle(op,cb = ()=>{}){
+
+	setShuffle(op,cb = ()=>{}){
 		const $shuffle 	= $(this.shuffle);
 
 		if(op){

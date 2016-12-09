@@ -85,12 +85,12 @@ const vc = new VC({
   privious  : function() {
     $('#fast_rewind').click();
   },
-  suffle    : function(tag){
+  shuffle    : function(tag){
     if( tag === 'on') {
-      playerUI.setSuffle(true);
+      playerUI.setShuffle(true);
       player.setPlayOption('shuffle',true);
     } else if( tag === 'off'){
-      playerUI.setSuffle(false);
+      playerUI.setShuffle(false);
       player.setPlayOption('shuffle',false);
     }
   },
@@ -174,9 +174,10 @@ const vc = new VC({
   }
 });
 
-window.player = player;
+window.player = playerUI;
 
 if (annyang) {
+  annyang.debug(true);
   annyang.addCommands(vc.getCommands());
   annyang.addCallback('result', function(phrases) {
     console.log("I think the user said: ", phrases[0]);

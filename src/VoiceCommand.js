@@ -7,7 +7,7 @@ class VoiceCommand{
     'pause' : obj_func.pause,
     'next' : obj_func.next,
     'previous' : obj_func.privious,    
-    '(turn) suffle *op' : obj_func.suffle,
+    '(turn) shuffle *op' : obj_func.shuffle,
     'repeat *op' : obj_func.repeat,
     'not repeat' : function(){ obj_func.repeat('off');},
     'volume *op' : obj_func.set_volume,
