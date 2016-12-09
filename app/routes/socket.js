@@ -1,32 +1,31 @@
 const PlayerCtr = require('../services/Player');
 const player = new PlayerCtr();
-const fs 	 = require('fs');
 
 module.exports = (io) => {
 	io.on('connection', function (socket) {
 		var tmp = {
 			songs: null
 		}
-		
 
-		// socket.on('continuous', () => {
-		// 	let continuous = player.getContinuous();
+		socket.on('get PlayList',key => {
+			player.getPlayList(key).then(playlists =>{
+				let event;
 
-		// 	io.emit('updateList',continuous);
-		// });
+				if(key) event = 'update List';
+				else event = 'update PlayList';
 
-		// socket.on('get PlayList',() => {
-		// 	let playlists = player.getPlayList();
+				socket.emit('update PlayList', playlists);
 
-		// 	io.emit('update PlayList', playlists);
-		// });
+			});
+		});
 
-		// socket.on('add PlayList',PlayList => {
-		// 	player.addPlayList(PlayList);
-		// });
+		socket.on('add PlayList',data => {
+			player.addPlayList(data);
 
+		});
+
+		//get PlayList와 같은 패턴으로 정리 필요
 		socket.on('set Music', (idx) => {
-			console.log(idx)
 			player.getMusic(idx, buf =>{
 				socket.emit('set Music', {'idx':idx,'buf':buf});
 			});
@@ -43,7 +42,6 @@ module.exports = (io) => {
 			}
 		});
 
-		// player.scan('hard','/Users/yongjunkim/Documents/genie 받은 폴더');
 		socket.on('scan directory', (dir) => {
 			player.scan('hard',dir);
 		});

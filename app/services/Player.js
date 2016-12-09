@@ -1,5 +1,6 @@
 const PlayerModel = require('../models/Player');
 const fs 		  = require('fs');
+const co 		  = require('co');
 
 class PlayerCtr {
 	constructor(){
@@ -47,10 +48,10 @@ class PlayerCtr {
 		});
 	}
 
-	addPlayList(data = {}) {
+	addPlayList(data = {}, cb = () => {}) {
 		let playlist = new PlayList(data);
 
-		this._PlayerDAO.addPlayList(playlist);
+		this._PlayerDAO.addPlayList(playlist).then(cb);
 	}
 	deletePlayList(title = ''){
 
@@ -66,6 +67,17 @@ class PlayerCtr {
 			});
 		});
 	}
+
+
+	// getPlayList(key=''){
+	// 	let modal = this._PlayerDAO;
+
+	// 	return co.wrap(function *(){
+	// 		let playList = yield modal.getPlayList();
+
+	// 		return playList;	
+	// 	})();
+	// }
 }
 
 module.exports = PlayerCtr;

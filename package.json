@@ -24,6 +24,7 @@
   "homepage": "https://github.com/StaySharp0/jarvisPlayer#readme",
   "dependencies": {
     "body-parser": "~1.15.2",
+    "co": "^4.6.0",
     "compression": "^1.6.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
