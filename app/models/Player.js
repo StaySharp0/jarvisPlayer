@@ -9,8 +9,9 @@ class PlayerModel {
 	constructor(){
 		this._coverPath = './data/cover/'
 		this._db = new Datastore({ filename: './data/database.db', autoload: true });
-		this._count = 0;
-		this._playlist_title;
+		this._music_cnt = 0;
+		this._playlist_cnt = 0;
+		this._playlist_title = [];
 		
 		
 		if(!fs.existsSync(this._coverPath)){
@@ -18,12 +19,12 @@ class PlayerModel {
 		}
 		// Music Count
 		this._db.count({ _type:'music' }, (err, count) => {
-			this._count = count;
-			console.log('Music count: '+this._count);
+			this._music_cnt = count;
+			console.log('Music count: '+this._music_cnt);
 		});
 		//Initialize titles
 		this._db.find({ _type : 'PlayList'}, (err,docs) => {
-			this._playlist_title = new Array(docs.length);
+			//this._playlist_title = new Array(docs.length);
 			for(let i = 0; i < docs.length ; i++){
 				this._playlist_title[i] = docs[i]._title;
 			}		
@@ -50,7 +51,7 @@ class PlayerModel {
 	updateModel(option = '', dir = ''){
 		if(!dir) return;
 		this._db.remove({_type:'music'},{ multi: true }, (err,numRemoved) => {
-			this._count -= numRemoved;
+			this._music_cnt -= numRemoved;
 
 			let musicFiles = this._scan('hard',dir);
 			let musics = musicFiles.forEach(MusicPath => {
@@ -62,12 +63,13 @@ class PlayerModel {
 	}
 	_insertMusic(music = {}){
 		music._type = 'music';
-		music._id 	= ++this._count;
+		music._id 	= ++this._music_cnt;
 
 		this._db.insert(music, function (err, newDoc) {
 			console.log(newDoc);
 		});
 	}
+
 	getMusic(idx){
 		return new Promise((resolve, reject) => {
 			const serchObj = { _type: 'music' };
@@ -79,18 +81,59 @@ class PlayerModel {
 			});
 		});
 	}
-	addPlayList(data = {}){		
-		 let me = this;
 
+	getPlayList(id = ''){		
+		return new Promise((resolve, reject) => {
+			const searchObj = {_type : 'PlayList'};
+			if(id){
+				searchObj._id = id;
+			}	
+			this._db.find(searchObj, (err,docs) =>{
+				if(err){
+					reject(err);
+				}
+//				console.log(docs);				
+				resolve(docs ? docs : null);	
+			});	
+		});
+	}
+
+	modifyPlayList(id = '',o = {title : '',subtitle : ''}){
+		if(!id){
+			return;
+		}
+		const searchObj = {_type : 'PlayList', _id : id};
+		const updateObj = {$set : {}};
+		if(o.title){
+			updateObj.$set._title = o.title;
+		}
+		if(o.subtitle){
+			updateObj.$set._subtitle = o.subtitle;
+		}
+		if(o.musics != undefined && o.musics.constructor == Array){
+			updateObj.$set._musics = o.musics;
+		}
+		this._db.update(searchObj, updateObj, {}, (err,numReplaced)=>{
+			if(err){
+				throw err;
+			} 
+			//dosomething	
+		});
+
+	}
+
+	addPlayList(data = {}){
 	 	for(let i = 0; i < this._playlist_title.length; i++){
 		 	if(this._playlist_title[i] == data.getTitle()){
 		 		console.log("title already exists!");
-		 		return;
+		 		return ;
 		 	}
 	 	}
-		data._type = 'PlayList';			
-		this._db.insert(data,function(err,newDoc){
-			me._playlist_title.push( new PlayList(newDoc).getTitle());
+	 	this._playlist_title.push(data.getTitle());
+		data._type = 'PlayList';
+		data._id = 'pl_' + ++this._playlist_cnt;			
+		this._db.insert(data,(err,newDoc) => {
+			//this._playlist_title.push( new PlayList(newDoc).getTitle());
 			//console.log(newDoc);
 		});
 	}
@@ -99,7 +142,7 @@ class PlayerModel {
 		 if(!title){
 			 return;
 		 }		 
-		 this._db.remove({_type : 'PlayList', _title : title},{}, function(err,numRemoved){
+		 this._db.remove({_type : 'PlayList', _title : title},{}, (err,numRemoved) => {
 			 if(numRemoved){
 				 console.log('Playlist "' + title + '" has been removed.');
 			 }
