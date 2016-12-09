@@ -20,11 +20,13 @@ class Music {
 			this.track_num = data.track.no;
 			this.disk_num = data.disk.no;
 			this.gerne = data.gerne;//array
-			this.art_format = data.picture[0].format;//picture is an array
 			this.duration = data.duration;
-			this.coverPath = coverPath+this.title +'.'+ this.art_format;
-			this.cover = this.title +'.'+ this.art_format;
-			fs.writeFileSync( this.coverPath, data.picture[0].data);
+			if(data.picture.length){		
+				this.art_format = data.picture[0].format;//picture is an array			
+				this.coverPath = coverPath+this.title +'.'+ this.art_format;
+				this.cover = this.title +'.'+ this.art_format;
+				fs.writeFileSync( this.coverPath, data.picture[0].data);
+			}
 			read_stream.close();
 		});		
 	}
