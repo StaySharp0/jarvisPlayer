@@ -99,8 +99,9 @@ class PlayerModel {
 	}
 
 	modifyPlayList(id = '',o = {title : '',subtitle : ''}){
+		return new Promise((resolve, reject) => {
 			if(!id){
-				return;
+				return reject();
 			}
 			const searchObj = {_type : 'PlayList', _id : id};
 			const updateObj = {$set : {}};
@@ -115,11 +116,11 @@ class PlayerModel {
 			}
 			this._db.update(searchObj, updateObj, {}, (err,numReplaced)=>{
 				if(err){
-					throw err;
+					reject(err);
 				} 
-				//dosomething	
+				resolve();
 			});
-
+		});
 	}
 
 	addPlayList(data = {}){
