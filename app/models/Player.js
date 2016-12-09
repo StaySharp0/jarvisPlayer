@@ -54,8 +54,9 @@ class PlayerModel {
 
 		let musicFiles = this._scan('hard',dir);
 		let initMusic = new Promise((resolve, reject)=>{
-			this._db.remove({_type:'music'},{ multi: true }, (err,numRemoved) => {
-				this._music_cnt -= numRemoved;
+			this._db.remove({},{ multi: true }, (err,numRemoved) => {
+				this._music_cnt = 0;
+				this._playlist_title = [];
 				if (err) return reject(err);
 				resolve();
 			});
