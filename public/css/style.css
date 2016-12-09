@@ -57,7 +57,7 @@ nav { background: rgb(0, 202, 208) }
 
 	.btn-option{ 
 		position: absolute; top: 0; right: 0;
-		width: 135px; background: #3eb1be;
+		width: 145px; background: #3eb1be;
      	}
      	#option li a { color: #000 }
      	#option .material-icons {
