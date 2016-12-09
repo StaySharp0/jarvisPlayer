@@ -4,8 +4,6 @@ class PlayList {
 		this._subTitle 	= o.subTitle;
 		this._musics 	= o.musics;
 		this._desc 		= '';
-		
-		this.setDesc(o.subTitle);
 	}
 
 	setTitle(txt = '') { 
@@ -38,8 +36,6 @@ class PlayList {
 
 	setMusics(o = []) {
 		this._musics = o.musics;
-
-		this.setDesc();
 	}
 
 	getTitle() { return this._title; }
