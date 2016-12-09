@@ -47,13 +47,11 @@ class LayoutUI {
 
 			if(player.getListKey() !== this._updateList.key){
 				player.setList(this._updateList);
-
-				player.setIndex(idx);
-				player.play(idx);
-				playerUI.set(player.getMusicInfo(idx));
-			} else {
-				if(player.getMusicId() === idx) return false;
-			}			
+			}
+			
+			player.setIndex(idx);
+			player.play(idx);
+			playerUI.set(player.getMusicInfo(idx));		
 		});
 	}
 	_SettingEvent(socket){
