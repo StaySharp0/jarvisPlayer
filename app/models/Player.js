@@ -71,16 +71,35 @@ class PlayerModel {
 		});
 	}
 
-	getMusic(idx){
+	_getMusic(idx,regex){
 		return new Promise((resolve, reject) => {
-			const serchObj = { _type: 'music' };
-			if(idx) serchObj._id = idx;
-
-			this._db.find(serchObj, function (err, music) {
+			const searchObj = { _type: 'music' };
+			if(idx) searchObj._id = idx;
+			if(regex){
+				searchObj.$or = [
+					{title : {$regex : regex}},
+					{artist : {$regex : regex}},
+					{album : {$regex : regex}}
+				];
+			}
+			console.log(searchObj);
+			this._db.find(searchObj, function (err, music) {
 				if (err) return reject(err);
-        		resolve(music ? music : null);
+        			resolve(music ? music : null);
 			});
 		});
+	}
+
+	getMusic(idx){
+		return this._getMusic(idx);
+	}
+
+	searchMusic(keyword){//title, artist, album
+		let regex = null;//new RegExp('');
+		if(keyword && keyword.length >= 2){
+			regex = new RegExp('(' + keyword + ')');
+		}
+		return this._getMusic(undefined, regex);
 	}
 
 	getPlayList(id = ''){		
@@ -99,7 +118,7 @@ class PlayerModel {
 		});
 	}
 
-	modifyPlayList(id = '',o = {title : '',subtitle : ''}){
+	modifyPlayList(id = '',o = {title : '',subTitle : ''}){
 		return new Promise((resolve, reject) => {
 			if(!id){
 				return reject();
@@ -109,8 +128,8 @@ class PlayerModel {
 			if(o.title){
 				updateObj.$set._title = o.title;
 			}
-			if(o.subtitle){
-				updateObj.$set._subtitle = o.subtitle;
+			if(o.subTitle){
+				updateObj.$set._subTitle = o.subTitle;
 			}	
 			if(o.musics != undefined && o.musics.constructor == Array){
 				updateObj.$set._musics = o.musics;
