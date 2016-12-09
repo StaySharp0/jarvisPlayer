@@ -74,7 +74,15 @@ class PlayerModel {
 	_getMusic(idx,regex){
 		return new Promise((resolve, reject) => {
 			const searchObj = { _type: 'music' };
-			if(idx) searchObj._id = idx;
+			if(idx) {
+				if(idx.constructor == Array){
+					searchObj.$or = idx.map(data => {
+						return { _id:data };
+					});
+				} else {
+					searchObj._id = idx;	
+				}
+			}
 			if(regex){
 				searchObj.$or = [
 					{title : {$regex : regex}},
