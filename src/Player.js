@@ -48,7 +48,8 @@ class Player {
       if(music.src) this._$e.attr('src',music.src);
       else this._socket.emit('set Music', music.index);  
     } else {
-      this._$e.embedplayer('play');
+      if(this._list === null){ $('.music-tr').eq(0).click(); }
+      else this._$e.embedplayer('play');
     }
   }
   pause()	{ this._$e.embedplayer('pause'); }
@@ -61,10 +62,15 @@ class Player {
     if(this._list){
       if(this._playOp.shuffle) return this._shufflePlay();
 
-      if( this._index === 0 ) return this.seek(0);
+      if( this._index === 0 ) {
+        this._index = this._list.length;
+        music = this._list[this._index];
+      } 
       music = this._list[--this._index];
     }
     this.play(music.index);
+
+    return music;
   }
   next() {
     if(this._list){
@@ -80,17 +86,22 @@ class Player {
       }
 
       this.play(music.index);
+
+      return music;
     }
   }
   _shufflePlay() {
-    this._index = parseInt((Math.random() * this._list.length) + 1);
+    this._index = parseInt((Math.random() * this._list.length));
     let music = this._list[this._index];
+    console.log(music);
 
     if(music.src){
       this._$e.attr('src',music.src);
     } else {
       this._socket.emit('set Music', music.index);  
     }
+
+    return music;
   }
  
   setEnvets(event,fn){ 
@@ -132,10 +143,11 @@ class Player {
     }
   }
   setList(data){
+    this._listKey = data.key;
     this._list = data.musics;
   }
   getListKey(){
-    return this._list.key;
+    return this._listKey;
   }
   getMusicInfo(music_id){
     if(music_id) {

@@ -10,7 +10,7 @@ class PlayerModel {
 		this._coverPath = './data/cover/'
 		this._db = new Datastore({ filename: './data/database.db', autoload: true });
 		this._music_cnt = 0;
-		this._playlist_cnt = 0;
+		// this._playlist_cnt = 0;
 		this._playlist_title = [];
 		
 		
@@ -25,9 +25,9 @@ class PlayerModel {
 		//Initialize titles
 		this._db.find({ _type : 'PlayList'}, (err,docs) => {
 			//this._playlist_title = new Array(docs.length);
-			this._playlist_cnt = docs.length;
+			// this._playlist_cnt = docs.length;
 			for(let i = 0; i < docs.length ; i++){
-				this._playlist_title[i] = docs[i]._title;
+				this._playlist_title[i] = {title: docs[i]._title, id: docs[i]._id};
 			}		
 		});
 		
@@ -51,24 +51,35 @@ class PlayerModel {
 	}
 	updateModel(option = '', dir = ''){
 		if(!dir) return;
-		this._db.remove({_type:'music'},{ multi: true }, (err,numRemoved) => {
-			this._music_cnt -= numRemoved;
 
-			let musicFiles = this._scan('hard',dir);
-			let musics = musicFiles.forEach(MusicPath => {
-				new Music(MusicPath,this._coverPath,(music) => {
-					this._insertMusic(music);
-				});
+		let musicFiles = this._scan('hard',dir);
+		let initMusic = new Promise((resolve, reject)=>{
+			this._db.remove({_type:'music'},{ multi: true }, (err,numRemoved) => {
+				this._music_cnt -= numRemoved;
+				if (err) return reject(err);
+				resolve();
 			});
 		});
+		
+		let insertMusic = musicFiles.map(MusicPath => {
+			let music = new Music(MusicPath,this._coverPath);
+
+			return this._insertMusic(music);
+		});
+
+		return Promise.all([initMusic, insertMusic]);
 	}
 	_insertMusic(music = {}){
 		music._type = 'music';
 		music._id 	= ++this._music_cnt;
-
-		this._db.insert(music, function (err, newDoc) {
-			console.log(newDoc);
+		
+		return new Promise((resolve, reject)=>{
+			this._db.insert(music, function (err, newDoc) {
+				if (err) return reject(err);
+				resolve();
+			});
 		});
+		
 	}
 
 	_getMusic(idx,regex){
@@ -105,7 +116,7 @@ class PlayerModel {
 	searchMusic(keyword){//title, artist, album
 		let regex = null;//new RegExp('');
 		if(keyword && keyword.length >= 2){
-			regex = new RegExp('(' + keyword + ')');
+			regex = new RegExp('(' + keyword + ')','i');
 		}
 		return this._getMusic(undefined, regex);
 	}
@@ -141,6 +152,8 @@ class PlayerModel {
 			}	
 			if(o.musics != undefined && o.musics.constructor == Array){
 				updateObj.$set._musics = o.musics;
+				updateObj.$set._desc   = PlayList.getDesc(o.musics);
+
 			}
 			this._db.update(searchObj, updateObj, {}, (err,numReplaced)=>{
 				if(err){
@@ -156,19 +169,23 @@ class PlayerModel {
 			let playlist = new PlayList(data);
 
 		 	for(let i = 0; i < this._playlist_title.length; i++){
-			 	if(this._playlist_title[i] == playlist.getTitle()){
+			 	if(this._playlist_title[i].title == playlist.getTitle()){
 			 		console.log("title already exists!");
 			 		return reject();
 			 	}
 		 	}
-		 	this._playlist_title.push(playlist.getTitle());
 			playlist._type = 'PlayList';
-			playlist._id = 'pl_' + (this._playlist_cnt+1);
+
 			this._db.insert(playlist,(err,newDoc) => {
 				if(err){
 					reject(err);
 				}
-				this._playlist_cnt++;
+
+				this._playlist_title.push({
+			 		title : newDoc._title,
+					id    : newDoc._id
+		 		});
+				// this._playlist_cnt++;
 				resolve();
 				//this._playlist_title.push( new PlayList(newDoc).getTitle());
 				//console.log(newDoc);
@@ -186,7 +203,9 @@ class PlayerModel {
 			 		reject(err);
 			 	}
 				 if(numRemoved){
-				 	this._playlist_cnt--;
+				 	this._playlist_title.forEach( (data,idx) => {
+				 		if(data.id === id) this._playlist_title.slice(idx,1);
+				 	});
 				 	resolve();					
 				 }
 			 });

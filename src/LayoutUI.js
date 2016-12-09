@@ -1,6 +1,6 @@
 import listTpl from './tpl/list-tpl.handlebars';
 import playListTpl from './tpl/playlist-tpl.handlebars';
-import addMusicIemTpl from './tpl/addMusic-tpl.handlebars';
+import addMusicItemTpl from './tpl/addMusic-tpl.handlebars';
 import * as io from 'socket.io-client';
 
 
@@ -42,17 +42,18 @@ class LayoutUI {
 	}
 	_ListEvent(socket,playerUI,player) {
 		$(document).on('click','.music-tr',(e) => {
-			if(player.getListKey !== this._updateList.key){
-				player.setList(this._updateList);
-			}
-
 			let idx = $(e.currentTarget).data('index');
-			
-			if(player.getMusicId() === idx) return false;
+			let key = $('.container').data('key');
 
-			player.setIndex(idx);
-			player.play(idx);
-			playerUI.set(player.getMusicInfo(idx));
+			if(player.getListKey() !== this._updateList.key){
+				player.setList(this._updateList);
+
+				player.setIndex(idx);
+				player.play(idx);
+				playerUI.set(player.getMusicInfo(idx));
+			} else {
+				if(player.getMusicId() === idx) return false;
+			}			
 		});
 	}
 	_SettingEvent(socket){
@@ -167,7 +168,7 @@ class LayoutUI {
 				$('.side-item').removeClass('on');
 				$('.playlist-item').removeClass('on');
 			} else if (data[0].key === 'Songs'){
-				$('#frm-Music2playlist').html(addMusicIemTpl(data[0]));
+				$('#frm-Music2playlist').html(addMusicItemTpl(data[0]));
 			}
 		});
 	}

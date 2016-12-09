@@ -8,7 +8,7 @@ class PlayerCtr {
 	}
 
 	scan(option = '', dir = ''){
-		this._PlayerDAO.updateModel(option,dir);
+		return this._PlayerDAO.updateModel(option,dir);
 	}
 	_durationSecond(n) {
 		n = n + '';
@@ -103,7 +103,6 @@ class PlayerCtr {
 				return rtn[0];
 			});
 
-			console.log(rtn[0].musics);
 			return rtn;
 		})(this);
 	}

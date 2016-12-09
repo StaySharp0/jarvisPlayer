@@ -3,7 +3,7 @@ const mm = require('musicmetadata');
 // var iconv  = require('iconv-lite');
 
 class Music {
-	constructor(path = '', coverPath = '', cb = ()=>{}){
+	constructor(path = '', coverPath = ''){
 		let read_stream = fs.createReadStream(path);
 		let parser = mm(read_stream,{duration : true}, (err, data) => {
 			if(err){
@@ -26,7 +26,6 @@ class Music {
 			this.cover = this.title +'.'+ this.art_format;
 			fs.writeFileSync( this.coverPath, data.picture[0].data);
 			read_stream.close();
-			cb(this);
 		});		
 	}
 }

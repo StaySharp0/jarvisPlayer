@@ -75,11 +75,11 @@ module.exports = (io) => {
 		});
 
 		socket.on('scan directory', (dir) => {
-			player.scan('hard',dir);
-			
-			player.getSongs('',musics => {
-				tmp.songs = musics;
-				socket.emit('update List',tmp.songs);
+			player.scan('hard',dir).then(() => {
+				player.getSongs('',musics => {
+					tmp.songs = musics;
+					socket.emit('update List',tmp.songs);
+				});
 			});
 		});
 	});

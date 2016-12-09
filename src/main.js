@@ -1,6 +1,7 @@
 import LayoutUI from './LayoutUI';
 import Player from './Player';
 import PlayerUI from './PlayerUI';
+import VC from './VoiceCommand';
 
 const playerUI = new PlayerUI({
   player    :'#player',
@@ -66,3 +67,130 @@ player.setEnvets('timeupdate',(time)=>{playerUI.updateTime(time)});
 player.setEnvets('volumechange',(volume)=>{playerUI.volumeChange(volume)});
 
 layoutUI.init(playerUI,player);
+
+
+const vc = new VC({
+  pause     : function(){
+    $('#pause').click();
+  },
+  list_play : function() {
+    $('.music-tr').eq(0).click();
+  },
+  play      : function() {
+    $('#play').click();
+  },
+  next      : function() {
+    $('#fast_forward').click();
+  },
+  privious  : function() {
+    $('#fast_rewind').click();
+  },
+  suffle    : function(tag){
+    if( tag === 'on') {
+      playerUI.setSuffle(true);
+      player.setPlayOption('shuffle',true);
+    } else if( tag === 'off'){
+      playerUI.setSuffle(false);
+      player.setPlayOption('shuffle',false);
+    }
+  },
+  show_playlist: function(tag){
+    $('.side-item').map( (idx,e) =>{
+      let title = $(e).html().toLowerCase().trim();
+      title = title.substring(title.indexOf('</i>')+4).trim();
+
+      if( title === tag ) {
+        return $(e).click();
+      }
+    });
+
+    $('.playlist-item').map( (idx,e) =>{
+      let title = $(e).html().toLowerCase().trim();
+
+      if( title === tag ) {
+        $('.side-playlist').click();
+        $('#playList').show();
+        return $(e).click();
+      }
+    });
+  },
+  play_playlist: function(tag){
+    $('.side-item').map( (idx,e) =>{
+      let title = $(e).html().toLowerCase();
+      title = title.substring(title.indexOf('</i>')+4).trim();
+
+      if( title === tag ) {
+        $(e).click();
+        return setTimeout(() => {
+          $('.music-tr').eq(0).click();
+        },1000);
+      }
+    });
+
+    $('.playlist-item').map( (idx,e) =>{
+      let title = $(e).html().toLowerCase().trim();
+
+      if( title === tag ) {
+        $(e).click();
+        $('.side-playlist').click();
+        $('#playList').show();
+
+        return setTimeout(() => {
+          $('.music-tr').eq(0).click();
+        },1000);
+      }
+    });
+  },
+  set_volume: function(tag){
+    let vol = $('#volume').val();
+    if(tag === 'up'){
+      $('#volume').val(vol+0.2).change();
+    } else if (tag === 'down'){
+      $('#volume').val(vol-0.2).change();
+    } else if (tag === 'mute' || tag === 'off'){
+      $('#volume').val(0).change();
+    } else if (tag === 'on'){
+      $('#volume').val(0.6).change();
+    }
+  },
+  repeat: function(tag){
+    if( tag === 'one') {
+      playerUI.setRepeatOne(true);
+      player.setPlayOption('repeat_one',true);
+      player.setPlayOption('repeat',false);
+    } else if( tag === 'all' || tag === 'list'){
+      playerUI.setRepeat(true);
+      player.setPlayOption('repeat',true);
+      player.setPlayOption('repeat_one',false);
+    } else if ( tag === 'off'){
+      playerUI.setRepeat(false);
+      player.setPlayOption('repeat',false);
+      player.setPlayOption('repeat_one',false);
+    }
+  },
+  search: function(tag){
+    $('#search').val(tag);
+    $('#frm-search').submit();
+  }
+});
+
+window.player = player;
+
+if (annyang) {
+  annyang.addCommands(vc.getCommands());
+  annyang.addCallback('result', function(phrases) {
+    console.log("I think the user said: ", phrases[0]);
+    console.log("But then again, it could be any of the following: ", phrases);
+  });
+  annyang.addCallback('resultNoMatch', function(phrases) {
+    console.log("oh~! no!")
+  });
+  annyang.addCallback('soundstart', function() {
+    console.log('sound detected');
+  });
+
+  annyang.addCallback('result', function() {
+    console.log('sound stopped');
+  });
+  annyang.start();
+}

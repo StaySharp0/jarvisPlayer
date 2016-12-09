@@ -3,6 +3,7 @@ class PlayList {
 		this._title 	= o.title;
 		this._subTitle 	= o.subTitle;
 		this._musics 	= o.musics;
+		this._desc 		= '';
 		
 		this.setDesc(o.subTitle);
 	}
@@ -14,24 +15,31 @@ class PlayList {
 		if(txt) this._subTitle = txt; 
 	}
 
-	setDesc(txt = ''){
-		if(txt === '' && this.musics){
-			let count = this.musics.legnth;
-			let playtime = 0;
-			
-			this.musics.map((music) => {
-				playtime += music.duration;
-			});
-
-			// x Songs - xx:xx
-			this._desc = count +' Songs - '+playtime
-		} else {
-			this._desc = txt;	
-		}
+	static _durationSecond(n){
+		n = n + '';
+		return n.length >= 2 ? n : new Array(2 - n.length + 1).join('0') + n;
 	}
+
+	static getDesc(musics = []){
+		let count = musics.length;
+		let playtime = 0;
+		
+		musics.map((music) => {
+			playtime += music.duration;
+		});
+
+		let min = parseInt(playtime / 60);
+		let sec = this._durationSecond(parseInt(playtime % 60));
+
+		// x Songs - xx:xx
+		return count +' Songs - '+min +':'+ sec;
+	}
+
 
 	setMusics(o = []) {
 		this._musics = o.musics;
+
+		this.setDesc();
 	}
 
 	getTitle() { return this._title; }

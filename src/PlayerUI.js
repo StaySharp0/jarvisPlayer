@@ -248,6 +248,70 @@ class PlayerUI {
 			this._$playerInfo.html(o.artist[0] + ' - ' + o.album);
 		}
 	}
+
+	setRepeat(op,cb = ()=>{}){
+		const $repeat 		= $(this.repeat);
+		const $repeat_one 	= $(this.repeat_one);
+
+		if(op){
+			$repeat_one.hide();
+			$repeat.show();
+			$repeat.addClass('on');
+
+			this._status.repeat 	= true;
+			this._status.repeat_one = false;
+
+			cb(this._status);
+		} else {
+			$repeat_one.hide();
+			$repeat.show();
+			$repeat.removeClass('on');
+
+			this._status.repeat 	= false;
+			this._status.repeat_one = false;
+
+			cb(this._status);
+		}
+	}
+	setRepeatOne(op,cb = ()=>{}){
+		const $repeat 		= $(this.repeat);
+		const $repeat_one 	= $(this.repeat_one);
+		
+		if(op){
+			$repeat.hide();
+			$repeat_one.show();
+			$repeat.removeClass('on');
+
+			this._status.repeat 	= false;
+			this._status.repeat_one = true;
+
+			cb(this._status);
+		} else {
+			$repeat.show();
+			$repeat_one.hide();
+			$repeat.removeClass('on');
+
+			this._status.repeat 	= false;
+			this._status.repeat_one = false;
+
+			cb(this._status);
+		}
+	}
+	SetShuffle(op,cb = ()=>{}){
+		const $shuffle 	= $(this.shuffle);
+
+		if(op){
+			$shuffle.addClass('on');
+			this._status.shuffle = true;
+
+			cb(this._status);
+		} else {
+			$shuffle.removeClass('on');
+			this._status.shuffle = true;
+				
+			cb(this._status);
+		}
+	}
 }
 
 export default PlayerUI;
