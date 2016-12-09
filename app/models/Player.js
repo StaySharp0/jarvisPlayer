@@ -124,16 +124,18 @@ class PlayerModel {
 
 	addPlayList(data = {}){
 		return new Promise((resolve, reject) => {
+			let playlist = new PlayList(data);
+
 		 	for(let i = 0; i < this._playlist_title.length; i++){
-			 	if(this._playlist_title[i] == data.getTitle()){
+			 	if(this._playlist_title[i] == playlist.getTitle()){
 			 		console.log("title already exists!");
 			 		return reject();
 			 	}
 		 	}
-		 	this._playlist_title.push(data.getTitle());
-			data._type = 'PlayList';
-			data._id = 'pl_' + ++this._playlist_cnt;			
-			this._db.insert(data,(err,newDoc) => {
+		 	this._playlist_title.push(playlist.getTitle());
+			playlist._type = 'PlayList';
+			playlist._id = 'pl_' + ++this._playlist_cnt;			
+			this._db.insert(playlist,(err,newDoc) => {
 				if(err){
 					reject(err);
 				}
