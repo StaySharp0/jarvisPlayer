@@ -4,30 +4,29 @@ const mm = require('musicmetadata');
 
 class Music {
 	constructor(path = '', coverPath = '', cb = ()=>{}){
-		let me = this;
 		let read_stream = fs.createReadStream(path);
 		let parser = mm(read_stream,{duration : true}, (err, data) => {
 			if(err){
-				me.valid = false;
+				this.valid = false;
 				throw err;
 			}
-			me.path = path;
-			me.valid = true;
-			me.title = data.title;
-			me.artist = data.artist;//array
-			me.album = data.album;
-			me.album_artist = data.albumartist;//array
-			me.year = data.year;
-			me.track_num = data.track.no;
-			me.disk_num = data.disk.no;
-			me.gerne = data.gerne;//array
-			me.art_format = data.picture[0].format;//picture is an array
-			me.duration = data.duration;
-			me.coverPath = coverPath+me.title +'.'+ me.art_format;
-			me.cover = me.title +'.'+ me.art_format;
-			fs.writeFileSync( me.coverPath, data.picture[0].data);
+			this.path = path;
+			this.valid = true;
+			this.title = data.title;
+			this.artist = data.artist;//array
+			this.album = data.album;
+			this.album_artist = data.albumartist;//array
+			this.year = data.year;
+			this.track_num = data.track.no;
+			this.disk_num = data.disk.no;
+			this.gerne = data.gerne;//array
+			this.art_format = data.picture[0].format;//picture is an array
+			this.duration = data.duration;
+			this.coverPath = coverPath+this.title +'.'+ this.art_format;
+			this.cover = this.title +'.'+ this.art_format;
+			fs.writeFileSync( this.coverPath, data.picture[0].data);
 			read_stream.close();
-			cb(me);
+			cb(this);
 		});		
 	}
 }
