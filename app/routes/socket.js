@@ -80,6 +80,9 @@ module.exports = (io) => {
 					tmp.songs = musics;
 					socket.emit('update List',tmp.songs);
 				});
+				player.getPlayList().then(playlists =>{
+					socket.emit('update PlayList', playlists);
+				});
 			});
 		});
 	});
