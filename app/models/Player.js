@@ -7,6 +7,9 @@ const path		= require('path');
 
 class PlayerModel {
 	constructor(){
+		if (!fs.existsSync('./data')) fs.mkdirSync('./data');
+		if (!fs.existsSync('./data/cover')) fs.mkdirSync('./data/cover');
+
 		this._coverPath = './data/cover/'
 		this._db = new Datastore({ filename: './data/database.db', autoload: true });
 		this._music_cnt = 0;
