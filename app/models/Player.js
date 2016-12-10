@@ -172,7 +172,9 @@ class PlayerModel {
 		return new Promise((resolve, reject) => {
 			let playlist = new PlayList(data);
 
+			console.log(this._playlist_title);
 		 	for(let i = 0; i < this._playlist_title.length; i++){
+
 			 	if(this._playlist_title[i].title == playlist.getTitle()){
 			 		console.log("title already exists!");
 			 		return reject();
@@ -208,7 +210,8 @@ class PlayerModel {
 			 	}
 				 if(numRemoved){
 				 	this._playlist_title.forEach( (data,idx) => {
-				 		if(data.id === id) this._playlist_title.slice(idx,1);
+				 		if(data.id === id) this._playlist_title.splice(idx,1);
+				 		console.log(this._playlist_title)
 				 	});
 				 	resolve();					
 				 }
